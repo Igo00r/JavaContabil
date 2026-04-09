@@ -21,8 +21,8 @@ public class ContaResponseDto extends RepresentationModel<ContaResponseDto> {
         dto.setId(conta.getId());
         dto.setNomeConta(conta.getNomeConta());
         dto.setTipo(conta.getTipo());
-        dto.setClienteId(conta.getCliente() != null ? conta.getCliente().getId() : null);
-        dto.setNomeCliente(conta.getCliente() != null ? conta.getCliente().getNomeCliente() : null);
+        dto.setClienteId(conta.getUsuario() != null ? conta.getUsuario().getId() : null);
+        dto.setNomeCliente(conta.getUsuario() != null ? conta.getUsuario().getNome() : null);
         return dto;
     }
 }

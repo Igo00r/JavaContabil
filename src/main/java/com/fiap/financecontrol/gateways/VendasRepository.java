@@ -13,22 +13,22 @@ import java.util.List;
 @Repository
 public interface VendasRepository extends JpaRepository<Vendas, Long> {
 
-    List<Vendas> findByClienteId(Long clienteId);
+    List<Vendas> findByUsuarioId(Long usuarioId);
 
     List<Vendas> findByRegistroContabilId(Long registroContabilId);
 
-    Page<Vendas> findByClienteId(Long clienteId, Pageable pageable);
+    Page<Vendas> findByUsuarioId(Long usuarioId, Pageable pageable);
 
     Page<Vendas> findByRegistroContabilId(Long registroContabilId, Pageable pageable);
 
-    @Query("SELECT v FROM Vendas v WHERE v.cliente.nomeCliente LIKE %:nomeCliente%")
-    List<Vendas> findByClienteNomeContaining(@Param("nomeCliente") String nomeCliente);
+    @Query("SELECT v FROM Vendas v WHERE v.usuario.nome LIKE %:nome%")
+    List<Vendas> findByUsuarioNomeContaining(@Param("nome") String nome);
 
-    @Query("SELECT v FROM Vendas v WHERE v.cliente.email = :email")
-    List<Vendas> findByClienteEmail(@Param("email") String email);
+    @Query("SELECT v FROM Vendas v WHERE v.usuario.email = :email")
+    List<Vendas> findByUsuarioEmail(@Param("email") String email);
 
-    @Query("SELECT COUNT(v) FROM Vendas v WHERE v.cliente.id = :clienteId")
-    Long countByClienteId(@Param("clienteId") Long clienteId);
+    @Query("SELECT COUNT(v) FROM Vendas v WHERE v.usuario.id = :usuarioId")
+    Long countByUsuarioId(@Param("usuarioId") Long usuarioId);
 
     @Query("SELECT v FROM Vendas v JOIN v.registroContabil rc WHERE rc.valor >= :valorMinimo")
     List<Vendas> findByValorRegistroMaiorOuIgual(@Param("valorMinimo") java.math.BigDecimal valorMinimo);

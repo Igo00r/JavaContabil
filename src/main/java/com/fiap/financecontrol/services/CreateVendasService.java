@@ -1,9 +1,9 @@
 package com.fiap.financecontrol.services;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.RegistroContabil;
 import com.fiap.financecontrol.domains.Vendas;
-import com.fiap.financecontrol.gateways.ClienteRepository;
+import com.fiap.financecontrol.gateways.UsuarioRepository;
 import com.fiap.financecontrol.gateways.RegistroContabilRepository;
 import com.fiap.financecontrol.gateways.VendasRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +15,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateVendasService implements VendasDataServiceInterface {
 
     private final VendasRepository vendasRepository;
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
     private final RegistroContabilRepository registroContabilRepository;
 
     @Override
     @Transactional
     public Vendas execute(Vendas vendas) {
-        // Validar e carregar cliente
-        Cliente cliente = clienteRepository.findById(vendas.getCliente().getId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + vendas.getCliente().getId()));
-        vendas.setCliente(cliente);
+        // Validar e carregar usuario
+        Usuario usuario = usuarioRepository.findById(vendas.getUsuario().getId())
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado com ID: " + vendas.getUsuario().getId()));
+        vendas.setUsuario(usuario);
 
         // Validar e carregar registro contábil
         RegistroContabil registroContabil = registroContabilRepository.findById(vendas.getRegistroContabil().getId())

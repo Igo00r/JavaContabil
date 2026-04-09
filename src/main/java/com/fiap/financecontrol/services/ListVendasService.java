@@ -22,7 +22,7 @@ public class ListVendasService {
 
     public Page<Vendas> listarVendasPorCliente(Long clienteId, int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "id"));
-        return vendasRepository.findByClienteId(clienteId, pageable);
+        return vendasRepository.findByUsuarioId(clienteId, pageable);
     }
 
     public Page<Vendas> listarVendasPorRegistroContabil(Long registroContabilId, int page, int size, Sort.Direction direction) {

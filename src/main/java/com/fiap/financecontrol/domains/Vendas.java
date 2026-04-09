@@ -22,8 +22,8 @@ public class Vendas {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id_cliente", nullable = false)
-    private Cliente cliente;
+    @JoinColumn(name = "usuario_id_usuario", nullable = false)
+    private Usuario usuario;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)

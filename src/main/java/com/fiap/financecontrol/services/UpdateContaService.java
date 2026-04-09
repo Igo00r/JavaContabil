@@ -1,8 +1,8 @@
 package com.fiap.financecontrol.services;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.Conta;
-import com.fiap.financecontrol.gateways.ClienteRepository;
+import com.fiap.financecontrol.gateways.UsuarioRepository;
 import com.fiap.financecontrol.gateways.ContaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UpdateContaService implements ContaDataServiceInterface {
 
     private final ContaRepository contaRepository;
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     @Transactional
@@ -22,10 +22,10 @@ public class UpdateContaService implements ContaDataServiceInterface {
             throw new RuntimeException("Conta não encontrada com ID: " + conta.getId());
         }
         
-        if (conta.getCliente() != null && conta.getCliente().getId() != null) {
-            Cliente cliente = clienteRepository.findById(conta.getCliente().getId())
-                    .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + conta.getCliente().getId()));
-            conta.setCliente(cliente);
+        if (conta.getUsuario() != null && conta.getUsuario().getId() != null) {
+            Usuario usuario = usuarioRepository.findById(conta.getUsuario().getId())
+                    .orElseThrow(() -> new RuntimeException("Usuario não encontrado com ID: " + conta.getUsuario().getId()));
+            conta.setUsuario(usuario);
         }
         
         return contaRepository.save(conta);

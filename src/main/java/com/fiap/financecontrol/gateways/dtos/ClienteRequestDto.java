@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways.dtos;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 public class ClienteRequestDto {
 
-    @NotBlank(message = "Nome do cliente é obrigatório")
-    @Size(max = 100, message = "Nome do cliente deve ter no máximo 100 caracteres")
+    @NotBlank(message = "Nome do usuario é obrigatório")
+    @Size(max = 100, message = "Nome do usuario deve ter no máximo 100 caracteres")
     private String nomeCliente;
 
     @NotBlank(message = "CPF/CNPJ é obrigatório")
@@ -31,9 +31,9 @@ public class ClienteRequestDto {
     @Pattern(regexp = "[SN]", message = "Status ativo deve ser 'S' ou 'N'")
     private String ativo = "S";
 
-    public Cliente toEntity() {
-        return Cliente.builder()
-                .nomeCliente(this.nomeCliente)
+    public Usuario toEntity() {
+        return Usuario.builder()
+                .nome(this.nomeCliente)
                 .cpfCnpj(this.cpfCnpj)
                 .email(this.email)
                 .senha(this.senha)

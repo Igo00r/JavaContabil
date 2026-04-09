@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways.dtos;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
@@ -18,14 +18,14 @@ public class ClienteResponseDto extends RepresentationModel<ClienteResponseDto> 
     private String email;
     private String ativo;
 
-    public static ClienteResponseDto fromEntity(Cliente cliente) {
+    public static ClienteResponseDto fromEntity(Usuario usuario) {
         ClienteResponseDto dto = new ClienteResponseDto();
-        dto.setId(cliente.getId());
-        dto.setNomeCliente(cliente.getNomeCliente());
-        dto.setDataCadastro(cliente.getDataCadastro());
-        dto.setCpfCnpj(cliente.getCpfCnpj());
-        dto.setEmail(cliente.getEmail());
-        dto.setAtivo(cliente.getAtivo());
+        dto.setId(usuario.getId());
+        dto.setNomeCliente(usuario.getNome());
+        dto.setDataCadastro(usuario.getDataCadastro());
+        dto.setCpfCnpj(usuario.getCpfCnpj());
+        dto.setEmail(usuario.getEmail());
+        dto.setAtivo(usuario.getAtivo());
         return dto;
     }
 }

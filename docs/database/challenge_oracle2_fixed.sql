@@ -25,7 +25,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE dispositivo_iot CASCADE CONSTRAINTS';  EXCEP
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE conta_contabil CASCADE CONSTRAINTS';   EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE cliente CASCADE CONSTRAINTS';          EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE usuario CASCADE CONSTRAINTS';          EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE centro_custo CASCADE CONSTRAINTS';     EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 /
@@ -65,7 +65,7 @@ CREATE SEQUENCE seq_venda_evento    START WITH 1 INCREMENT BY 1 NOCACHE;
 ---------------------------
 -- TABELAS BASE
 ---------------------------
-CREATE TABLE cliente (
+CREATE TABLE usuario (
     id_cliente    NUMBER(5)       NOT NULL,
     nome_cliente  VARCHAR2(100)   NOT NULL,
     data_cadastro DATE            DEFAULT SYSDATE NOT NULL,
@@ -169,7 +169,7 @@ CREATE UNIQUE INDEX venda_evento__idx ON venda_evento (vendas_id_vendas);
 ---------------------------
 ALTER TABLE conta_contabil
   ADD CONSTRAINT conta_cliente_fk FOREIGN KEY (cliente_id_cliente)
-      REFERENCES cliente (id_cliente) NOT DEFERRABLE;
+      REFERENCES usuario (id_cliente) NOT DEFERRABLE;
 
 ALTER TABLE reg_cont
   ADD CONSTRAINT reg_cont_conta_fk FOREIGN KEY (conta_id_conta)
@@ -181,7 +181,7 @@ ALTER TABLE reg_cont
 
 ALTER TABLE vendas
   ADD CONSTRAINT vendas_cliente_fk FOREIGN KEY (cliente_id_cliente)
-      REFERENCES cliente (id_cliente) NOT DEFERRABLE;
+      REFERENCES usuario (id_cliente) NOT DEFERRABLE;
 
 ALTER TABLE vendas
   ADD CONSTRAINT vendas_reg_cont_fk FOREIGN KEY (reg_cont_id_reg_cont)
@@ -201,7 +201,7 @@ ALTER TABLE venda_evento
 
 ALTER TABLE venda_evento
   ADD CONSTRAINT venda_evento_cliente_fk FOREIGN KEY (cliente_id_cliente)
-      REFERENCES cliente (id_cliente) NOT DEFERRABLE;
+      REFERENCES usuario (id_cliente) NOT DEFERRABLE;
 
 ALTER TABLE venda_evento
   ADD CONSTRAINT venda_evento_vendas_fk FOREIGN KEY (vendas_id_vendas)
@@ -228,15 +228,15 @@ END;
 SHOW ERRORS
 
 ---------------------------
--- DEFAULTS (cliente/conta/ccusto padrão)
+-- DEFAULTS (usuario/conta/ccusto padrão)
 ---------------------------
 CREATE OR REPLACE PROCEDURE pr_setup_defaults AS
   v_exists NUMBER;
 BEGIN
-  -- Cliente genérico
-  SELECT COUNT(*) INTO v_exists FROM cliente WHERE id_cliente = 99999;
+  -- Usuario genérico
+  SELECT COUNT(*) INTO v_exists FROM usuario WHERE id_cliente = 99999;
   IF v_exists = 0 THEN
-    INSERT INTO cliente(id_cliente, nome_cliente, cpf_cnpj, email, senha, ativo)
+    INSERT INTO usuario(id_cliente, nome_cliente, cpf_cnpj, email, senha, ativo)
     VALUES (99999, 'CLIENTE GENERICO', '00000000000000', 'generico@example.com', '***', 'S');
   END IF;
 
@@ -270,7 +270,7 @@ DECLARE
   v_qtd          NUMBER := 1;
   v_unit         NUMBER := 0;
   v_total        NUMBER := 0;
-  v_cliente      cliente.id_cliente%TYPE;
+  v_cliente      usuario.id_cliente%TYPE;
   v_reg_cont_id  reg_cont.id_reg_cont%TYPE;
   v_venda_id     vendas.id_vendas%TYPE;
 BEGIN
@@ -294,7 +294,7 @@ BEGIN
   v_unit  := NVL(:NEW.valor_unitario, v_preco_padrao);
   v_total := NVL(:NEW.valor_total, v_qtd * v_unit);
 
-  -- Cliente default se não vier no evento
+  -- Usuario default se não vier no evento
   v_cliente := NVL(:NEW.cliente_id_cliente, 99999);
 
   -- REG_CONT (receita) com conta/centro padrão 1001
@@ -302,7 +302,7 @@ BEGIN
   INSERT INTO reg_cont(id_reg_cont, valor, conta_id_conta, centro_custo_id_centro_custo)
   VALUES (v_reg_cont_id, NVL(v_total,0), 1001, 1001);
 
-  -- VENDAS vinculada ao REG_CONT e ao cliente + referência ao evento
+  -- VENDAS vinculada ao REG_CONT e ao usuario + referência ao evento
   v_venda_id := vendas_seq.NEXTVAL;
   INSERT INTO vendas(id_vendas, cliente_id_cliente, reg_cont_id_reg_cont, venda_evento_id_evento)
   VALUES (v_venda_id, v_cliente, v_reg_cont_id, :NEW.id_evento);

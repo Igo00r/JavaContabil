@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.RegistroContabil;
 import com.fiap.financecontrol.domains.Vendas;
 import com.fiap.financecontrol.gateways.dtos.VendasRequestDto;
@@ -97,7 +97,7 @@ public class VendasController {
     public ResponseEntity<EntityModel<VendasResponseDto>> createVenda(@RequestBody @Valid VendasRequestDto vendaDto) {
         Vendas venda = vendaDto.toEntity();
         
-        venda.setCliente(Cliente.builder().id(vendaDto.getClienteId()).build());
+        venda.setUsuario(Usuario.builder().id(vendaDto.getClienteId()).build());
         venda.setRegistroContabil(RegistroContabil.builder().id(vendaDto.getRegistroContabilId()).build());
         
         Vendas vendaCriada = createVendasService.execute(venda);
@@ -114,7 +114,7 @@ public class VendasController {
         Vendas venda = vendaDto.toEntity();
         venda.setId(id);
         
-        venda.setCliente(Cliente.builder().id(vendaDto.getClienteId()).build());
+        venda.setUsuario(Usuario.builder().id(vendaDto.getClienteId()).build());
         venda.setRegistroContabil(RegistroContabil.builder().id(vendaDto.getRegistroContabilId()).build());
         
         Vendas vendaAtualizada = updateVendasService.execute(venda);
@@ -135,7 +135,7 @@ public class VendasController {
         model.add(linkTo(methodOn(VendasController.class).updateVenda(id, null)).withRel("update"));
         model.add(linkTo(VendasController.class).slash(id).withRel("delete"));
         if (clienteId != null) {
-            model.add(linkTo(methodOn(ClienteController.class).getCliente(clienteId)).withRel("cliente"));
+            model.add(linkTo(methodOn(UsuarioController.class).getCliente(clienteId)).withRel("usuario"));
         }
         if (registroContabilId != null) {
             model.add(linkTo(methodOn(RegistroContabilController.class).getRegistroContabil(registroContabilId)).withRel("registro-contabil"));

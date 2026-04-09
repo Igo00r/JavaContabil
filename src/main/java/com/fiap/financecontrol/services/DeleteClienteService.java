@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.services;
 
-import com.fiap.financecontrol.gateways.ClienteRepository;
+import com.fiap.financecontrol.gateways.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DeleteClienteService {
 
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public void execute(Long id) {
-        if (!clienteRepository.existsById(id)) {
-            throw new RuntimeException("Cliente não encontrado com ID: " + id);
+        if (!usuarioRepository.existsById(id)) {
+            throw new RuntimeException("Usuario não encontrado com ID: " + id);
         }
-        clienteRepository.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 }

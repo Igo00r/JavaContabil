@@ -1,7 +1,7 @@
 package com.fiap.financecontrol.services;
 
-import com.fiap.financecontrol.domains.Cliente;
-import com.fiap.financecontrol.gateways.ClienteRepository;
+import com.fiap.financecontrol.domains.Usuario;
+import com.fiap.financecontrol.gateways.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,20 +13,20 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ListClientesService {
 
-    private final ClienteRepository clienteRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public Page<Cliente> listarClientes(int page, int size, Sort.Direction direction) {
+    public Page<Usuario> listarClientes(int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
-        return clienteRepository.findAll(pageable);
+        return usuarioRepository.findAll(pageable);
     }
 
-    public Page<Cliente> listarClientesAtivos(int page, int size, Sort.Direction direction) {
+    public Page<Usuario> listarClientesAtivos(int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
-        return clienteRepository.findByAtivo("S", pageable);
+        return usuarioRepository.findByAtivo("S", pageable);
     }
 
-    public Page<Cliente> buscarClientesPorNome(String nome, int page, int size, Sort.Direction direction) {
+    public Page<Usuario> buscarClientesPorNome(String nome, int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
-        return clienteRepository.findByNomeContainingAndAtivo(nome, "S", pageable);
+        return usuarioRepository.findByNomeContainingAndAtivo(nome, "S", pageable);
     }
 }

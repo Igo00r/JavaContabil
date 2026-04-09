@@ -159,7 +159,7 @@ Os clientes podem navegar pela API seguindo os links fornecidos nas respostas:
 - **self**: Link para o próprio recurso
 - **update**: Link para atualizar o recurso
 - **delete**: Link para deletar o recurso
-- **relacionados**: Links para recursos relacionados (ex: cliente → contas, vendas)
+- **relacionados**: Links para recursos relacionados (ex: usuario → contas, vendas)
 
 #### Paginação com Links
 Nas respostas paginadas, são fornecidos links de navegação:
@@ -173,10 +173,10 @@ Nas respostas paginadas, são fornecidos links de navegação:
 
 #### Clientes
 - `GET /fiap/clientes` - Listar clientes (com paginação, filtros e links HATEOAS)
-- `GET /fiap/clientes/{id}` - Buscar cliente por ID (com links HATEOAS)
-- `POST /fiap/clientes` - Criar novo cliente (retorna com links HATEOAS)
-- `PUT /fiap/clientes/{id}` - Atualizar cliente (retorna com links HATEOAS)
-- `DELETE /fiap/clientes/{id}` - Deletar cliente
+- `GET /fiap/clientes/{id}` - Buscar usuario por ID (com links HATEOAS)
+- `POST /fiap/clientes` - Criar novo usuario (retorna com links HATEOAS)
+- `PUT /fiap/clientes/{id}` - Atualizar usuario (retorna com links HATEOAS)
+- `DELETE /fiap/clientes/{id}` - Deletar usuario
 
 #### Centros de Custo
 - `GET /fiap/centros-custo` - Listar centros de custo (com paginação e links HATEOAS)
@@ -420,7 +420,7 @@ Para mais detalhes sobre as mudanças da Sprint 2, consulte: [docs/SPRINT2_MUDAN
 ### ✅ Entidades
 - **Cliente**: Gestão de clientes com validações de CPF/CNPJ e email únicos
 - **CentroCusto**: Centros de custo para organização contábil
-- **Conta**: Contas contábeis (Receita/Despesa) com relacionamento opcional com cliente
+- **Conta**: Contas contábeis (Receita/Despesa) com relacionamento opcional com usuario
 - **RegistroContabil**: Lançamentos contábeis com auditoria automática
 - **Vendas**: Registro de vendas vinculadas a clientes e registros contábeis
 

@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.gateways.dtos.ClienteRequestDto;
 import com.fiap.financecontrol.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,17 +13,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ClienteController.class)
+@WebMvcTest(UsuarioController.class)
 @ActiveProfiles("test")
-class ClienteControllerTest {
+class UsuarioControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,10 +30,10 @@ class ClienteControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private CreateClienteService createClienteService;
+    private CreateUsuarioService createClienteService;
 
     @MockBean
-    private UpdateClienteService updateClienteService;
+    private UpdateUsuarioService updateClienteService;
 
     @MockBean
     private ListClientesService listClientesService;
@@ -56,7 +54,7 @@ class ClienteControllerTest {
         requestDto.setSenha("senha123");
         requestDto.setAtivo("S");
 
-        Cliente cliente = Cliente.builder()
+        Usuario usuario = Usuario.builder()
                 .id(1L)
                 .nomeCliente("João Silva")
                 .cpfCnpj("12345678901")
@@ -66,7 +64,7 @@ class ClienteControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(createClienteService.execute(any(Cliente.class))).thenReturn(cliente);
+        when(createClienteService.execute(any(Usuario.class))).thenReturn(usuario);
 
         // When & Then
         mockMvc.perform(post("/fiap/clientes")
@@ -81,7 +79,7 @@ class ClienteControllerTest {
     @Test
     void shouldGetClienteById() throws Exception {
         // Given
-        Cliente cliente = Cliente.builder()
+        Usuario usuario = Usuario.builder()
                 .id(1L)
                 .nomeCliente("João Silva")
                 .cpfCnpj("12345678901")
@@ -91,7 +89,7 @@ class ClienteControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(findByIdClienteService.executeOrThrow(1L)).thenReturn(cliente);
+        when(findByIdClienteService.executeOrThrow(1L)).thenReturn(usuario);
 
         // When & Then
         mockMvc.perform(get("/fiap/clientes/1"))
@@ -124,7 +122,7 @@ class ClienteControllerTest {
         requestDto.setSenha("senha123");
         requestDto.setAtivo("S");
 
-        Cliente clienteAtualizado = Cliente.builder()
+        Usuario usuarioAtualizado = Usuario.builder()
                 .id(1L)
                 .nomeCliente("João Silva Santos")
                 .cpfCnpj("12345678901")
@@ -134,7 +132,7 @@ class ClienteControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(updateClienteService.execute(any(Cliente.class))).thenReturn(clienteAtualizado);
+        when(updateClienteService.execute(any(Usuario.class))).thenReturn(usuarioAtualizado);
 
         // When & Then
         mockMvc.perform(put("/fiap/clientes/1")

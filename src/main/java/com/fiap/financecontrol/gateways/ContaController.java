@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.Conta;
 import com.fiap.financecontrol.domains.TipoConta;
 import com.fiap.financecontrol.gateways.dtos.ContaRequestDto;
@@ -98,7 +98,7 @@ public class ContaController {
         Conta conta = contaDto.toEntity();
         
         if (contaDto.getClienteId() != null) {
-            conta.setCliente(Cliente.builder().id(contaDto.getClienteId()).build());
+            conta.setUsuario(Usuario.builder().id(contaDto.getClienteId()).build());
         }
         
         Conta contaCriada = createContaService.execute(conta);
@@ -116,7 +116,7 @@ public class ContaController {
         conta.setId(id);
         
         if (contaDto.getClienteId() != null) {
-            conta.setCliente(Cliente.builder().id(contaDto.getClienteId()).build());
+            conta.setUsuario(Usuario.builder().id(contaDto.getClienteId()).build());
         }
         
         Conta contaAtualizada = updateContaService.execute(conta);
@@ -137,7 +137,7 @@ public class ContaController {
         model.add(linkTo(methodOn(ContaController.class).updateConta(id, null)).withRel("update"));
         model.add(linkTo(ContaController.class).slash(id).withRel("delete"));
         if (clienteId != null) {
-            model.add(linkTo(methodOn(ClienteController.class).getCliente(clienteId)).withRel("cliente"));
+            model.add(linkTo(methodOn(UsuarioController.class).getCliente(clienteId)).withRel("usuario"));
         }
         model.add(linkTo(methodOn(RegistroContabilController.class).getRegistrosContabeis(0, Sort.Direction.ASC, 10, id, null, null, null)).withRel("registros-contabeis"));
     }

@@ -6,7 +6,7 @@ spring:
   application:
     name: finance-control
   profiles:
-    active: ${PROFILE:local}
+    active: ${PROFILE:dev}
   hateoas:
     use-hal-as-default-json-media-type: false
 

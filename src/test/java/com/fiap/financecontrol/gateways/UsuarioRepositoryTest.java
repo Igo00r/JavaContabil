@@ -1,6 +1,6 @@
 package com.fiap.financecontrol.gateways;
 
-import com.fiap.financecontrol.domains.Cliente;
+import com.fiap.financecontrol.domains.Usuario;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,18 +14,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-class ClienteRepositoryTest {
+class UsuarioRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Test
     void shouldFindClienteByEmail() {
         // Given
-        Cliente cliente = Cliente.builder()
+        Usuario usuario = Usuario.builder()
                 .nomeCliente("João Silva")
                 .cpfCnpj("12345678901")
                 .email("joao@email.com")
@@ -34,10 +34,10 @@ class ClienteRepositoryTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
         
-        entityManager.persistAndFlush(cliente);
+        entityManager.persistAndFlush(usuario);
 
         // When
-        Optional<Cliente> found = clienteRepository.findByEmail("joao@email.com");
+        Optional<Usuario> found = usuarioRepository.findByEmail("joao@email.com");
 
         // Then
         assertThat(found).isPresent();
@@ -47,7 +47,7 @@ class ClienteRepositoryTest {
     @Test
     void shouldFindClienteByCpfCnpj() {
         // Given
-        Cliente cliente = Cliente.builder()
+        Usuario usuario = Usuario.builder()
                 .nomeCliente("Maria Santos")
                 .cpfCnpj("98765432100")
                 .email("maria@email.com")
@@ -56,10 +56,10 @@ class ClienteRepositoryTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
         
-        entityManager.persistAndFlush(cliente);
+        entityManager.persistAndFlush(usuario);
 
         // When
-        Optional<Cliente> found = clienteRepository.findByCpfCnpj("98765432100");
+        Optional<Usuario> found = usuarioRepository.findByCpfCnpj("98765432100");
 
         // Then
         assertThat(found).isPresent();
@@ -69,7 +69,7 @@ class ClienteRepositoryTest {
     @Test
     void shouldReturnEmptyWhenClienteNotFound() {
         // When
-        Optional<Cliente> found = clienteRepository.findByEmail("inexistente@email.com");
+        Optional<Usuario> found = usuarioRepository.findByEmail("inexistente@email.com");
 
         // Then
         assertThat(found).isEmpty();
@@ -78,7 +78,7 @@ class ClienteRepositoryTest {
     @Test
     void shouldCheckIfEmailExists() {
         // Given
-        Cliente cliente = Cliente.builder()
+        Usuario usuario = Usuario.builder()
                 .nomeCliente("Pedro Costa")
                 .cpfCnpj("11122233344")
                 .email("pedro@email.com")
@@ -87,10 +87,10 @@ class ClienteRepositoryTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
         
-        entityManager.persistAndFlush(cliente);
+        entityManager.persistAndFlush(usuario);
 
         // When & Then
-        assertThat(clienteRepository.existsByEmail("pedro@email.com")).isTrue();
-        assertThat(clienteRepository.existsByEmail("inexistente@email.com")).isFalse();
+        assertThat(usuarioRepository.existsByEmail("pedro@email.com")).isTrue();
+        assertThat(usuarioRepository.existsByEmail("inexistente@email.com")).isFalse();
     }
 }

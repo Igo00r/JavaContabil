@@ -36,8 +36,8 @@ public class Conta {
     private TipoConta tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id_cliente")
-    private Cliente cliente;
+    @JoinColumn(name = "usuario_id_usuario", nullable = false)
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default

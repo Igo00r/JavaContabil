@@ -23,9 +23,9 @@ public class VendasResponseDto extends RepresentationModel<VendasResponseDto> {
     public static VendasResponseDto fromEntity(Vendas venda) {
         VendasResponseDto dto = new VendasResponseDto();
         dto.setId(venda.getId());
-        dto.setClienteId(venda.getCliente().getId());
-        dto.setNomeCliente(venda.getCliente().getNomeCliente());
-        dto.setEmailCliente(venda.getCliente().getEmail());
+        dto.setClienteId(venda.getUsuario().getId());
+        dto.setNomeCliente(venda.getUsuario().getNome());
+        dto.setEmailCliente(venda.getUsuario().getEmail());
         dto.setRegistroContabilId(venda.getRegistroContabil().getId());
         dto.setValorRegistro(venda.getRegistroContabil().getValor());
         dto.setNomeConta(venda.getRegistroContabil().getConta().getNomeConta());

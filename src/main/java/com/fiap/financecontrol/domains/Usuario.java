@@ -9,27 +9,25 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
-@Table(name = "CLIENTE")
+@Table(name = "usuario")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = "id")
-public class Cliente {
+public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
-    @SequenceGenerator(name = "cliente_seq", sequenceName = "cliente_seq", allocationSize = 1)
-    @Column(name = "id_cliente")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
+    @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_seq", allocationSize = 1)
+    @Column(name = "id_usuario")
     private Long id;
 
     @NotBlank
     @Size(max = 100)
-    @Column(name = "nome_cliente", nullable = false, length = 100)
-    private String nomeCliente;
+    @Column(name = "nome", nullable = false, length = 100)
+    private String nome;
 
     @Column(name = "data_cadastro", nullable = false)
     private LocalDateTime dataCadastro;
@@ -54,11 +52,15 @@ public class Cliente {
     @Builder.Default
     private String ativo = "S";
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "role", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Conta> contas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Vendas> vendas = new ArrayList<>();
 
@@ -71,11 +73,11 @@ public class Cliente {
 
     public void adicionarConta(Conta conta) {
         contas.add(conta);
-        conta.setCliente(this);
+        conta.setUsuario(this);
     }
 
     public void adicionarVenda(Vendas venda) {
         vendas.add(venda);
-        venda.setCliente(this);
+        venda.setUsuario(this);
     }
 }

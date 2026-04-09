@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@140.238.179.84:1521/FREEPDB1
+    url: jdbc:oracle:thin:@//oracle.fiap.com.br:1521/orcl
     username: ${DB_USERNAME:appuser}
     password: ${DB_PASSWORD:AppPass#2025}
     hikari:
@@ -12,16 +12,28 @@ spring:
       max-lifetime: 1800000
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
         format_sql: true
         use_sql_comments: true
     show-sql: true
+  flyway:
+    enabled: true
+    create-schemas: true
+    schemas: RM559755
+    baseline-on-migrate: true
+    baseline-version: 0
+
+
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     com.fiap.financecontrol: DEBUG
+    logging:
+      level:
+        org:
+          flywaydb=info:

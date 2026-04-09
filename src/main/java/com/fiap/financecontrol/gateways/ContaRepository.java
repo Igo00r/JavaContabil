@@ -18,16 +18,16 @@ public interface ContaRepository extends JpaRepository<Conta, Long> {
 
     Page<Conta> findByTipo(TipoConta tipo, Pageable pageable);
 
-    List<Conta> findByClienteId(Long clienteId);
+    List<Conta> findByUsuarioId(Long clienteId);
 
     List<Conta> findByNomeContaContaining(String nome);
 
     @Query("SELECT c FROM Conta c WHERE c.nomeConta LIKE %:nome% AND c.tipo = :tipo")
     Page<Conta> findByNomeContainingAndTipo(@Param("nome") String nome, @Param("tipo") TipoConta tipo, Pageable pageable);
 
-    @Query("SELECT c FROM Conta c WHERE c.cliente IS NULL")
+    @Query("SELECT c FROM Conta c WHERE c.usuario IS NULL")
     List<Conta> findContasGenericas();
 
-    @Query("SELECT c FROM Conta c WHERE c.cliente IS NOT NULL")
+    @Query("SELECT c FROM Conta c WHERE c.usuario IS NOT NULL")
     List<Conta> findContasEspecificas();
 }

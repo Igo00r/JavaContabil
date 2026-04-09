@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class VendasRequestDto {
 
-    @NotNull(message = "ID do cliente é obrigatório")
+    @NotNull(message = "ID do usuario é obrigatório")
     private Long clienteId;
 
     @NotNull(message = "ID do registro contábil é obrigatório")
