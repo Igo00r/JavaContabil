@@ -5,9 +5,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 @Entity
 @Table(name = "usuario")
@@ -16,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
@@ -79,5 +83,43 @@ public class Usuario {
     public void adicionarVenda(Vendas venda) {
         vendas.add(venda);
         venda.setUsuario(this);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    public static Usuario registrarUsuario(
+
+            String nome,
+            String cpfCnpj,
+            String email,
+            String senha
+
+
+    ) {
+        return new Usuario(
+                null,
+                nome,
+                LocalDateTime.now(),
+                cpfCnpj,
+                email,
+                senha,
+                "S",
+                Role.USER,
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
     }
 }

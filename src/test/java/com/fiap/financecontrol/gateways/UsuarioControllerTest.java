@@ -1,7 +1,8 @@
 package com.fiap.financecontrol.gateways;
 
 import com.fiap.financecontrol.domains.Usuario;
-import com.fiap.financecontrol.gateways.dtos.ClienteRequestDto;
+import com.fiap.financecontrol.presentation.dtos.request.ClienteRequestDto;
+import com.fiap.financecontrol.presentation.UsuarioController;
 import com.fiap.financecontrol.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

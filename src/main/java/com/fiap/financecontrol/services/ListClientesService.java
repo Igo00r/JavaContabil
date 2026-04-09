@@ -16,17 +16,17 @@ public class ListClientesService {
     private final UsuarioRepository usuarioRepository;
 
     public Page<Usuario> listarClientes(int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nome"));
         return usuarioRepository.findAll(pageable);
     }
 
     public Page<Usuario> listarClientesAtivos(int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nome"));
         return usuarioRepository.findByAtivo("S", pageable);
     }
 
     public Page<Usuario> buscarClientesPorNome(String nome, int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nome"));
         return usuarioRepository.findByNomeContainingAndAtivo(nome, "S", pageable);
     }
 }

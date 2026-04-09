@@ -21,8 +21,13 @@ springdoc:
   default-media-type: application/json
   use-hal-as-default-media-type: false
 
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:12345678}
