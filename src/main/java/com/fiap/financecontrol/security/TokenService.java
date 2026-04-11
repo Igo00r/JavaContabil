@@ -7,26 +7,36 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 public class TokenService {
     @Value(value = "${api.security.token.secret}")
     private String secret;
-    public String gerarToken(Long idUsuario) {
+    public String gerarToken(Long idUsuario, Collection<? extends GrantedAuthority> authorities) {
         try {
             var algoritmo = Algorithm.HMAC256(secret);
+
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
             return JWT.create()
-                    .withIssuer("API GranaFacil")
+                    .withIssuer("JavaContabil")
                     .withSubject(idUsuario.toString())
+                    .withClaim("roles", roles)
                     .withExpiresAt(dataExpiracao())
                     .sign(algoritmo);
+
         } catch (Exception exception) {
-            throw new RuntimeException("erro ao gerrar token jwt", exception);
+            throw new RuntimeException("erro ao gerar token jwt", exception);
         }
     }
 
@@ -39,7 +49,7 @@ public class TokenService {
 
             Algorithm algoritmo = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algoritmo)
-                    .withIssuer("API GranaFacil")
+                    .withIssuer("JavaContabil")
                     .build();
 
             try {

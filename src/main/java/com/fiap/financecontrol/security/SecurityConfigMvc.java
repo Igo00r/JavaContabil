@@ -29,21 +29,27 @@ public class SecurityConfigMvc {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityFilter securityFilter) throws Exception {
 
         http
-                .cors(Customizer.withDefaults())
-
-                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // GARANTE O USO DO BEAN ACIMA
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // LIBERA O OPTIONS PARA TODAS AS ROTAS (Isso evita o 403 no pre-flight)
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
+                                "/login.html",
+                                "/dashboard.html",
+                                "/fiap/autenticar/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
+                                "/api-docs/**",
+                                "/actuator/**"
 
-                                "/h2-console/**",
-
-                                "/fiap/autenticar/**").permitAll()
+                        ).permitAll()
                         .anyRequest().authenticated()
-
-                ).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                )
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -51,10 +57,21 @@ public class SecurityConfigMvc {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+
+
+        configuration.setAllowedOrigins(List.of("*"));
+
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+
+
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+
+
+        configuration.setExposedHeaders(List.of("Authorization"));
+
+
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

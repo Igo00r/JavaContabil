@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class Conta {
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<RegistroContabil> registrosContabeis = new ArrayList<>();
+
+    @Column(nullable = false)
+    private BigDecimal saldo = BigDecimal.ZERO;
 
     public void adicionarRegistroContabil(RegistroContabil registro) {
         registrosContabeis.add(registro);

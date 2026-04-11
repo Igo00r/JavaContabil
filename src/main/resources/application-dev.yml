@@ -16,24 +16,32 @@ spring:
     database-platform: org.hibernate.dialect.OracleDialect
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         use_sql_comments: true
-    show-sql: true
+
   flyway:
     enabled: true
     create-schemas: true
     schemas: RM559755
     baseline-on-migrate: true
     baseline-version: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: OFF
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     com.fiap.financecontrol: DEBUG
     logging:
       level:
         org:
           flywaydb=info:
+          hibernate.SQL: OFF
+          hibernate.orm.jdbc.bind: OFF
+          hibernate.type.descriptor.sql: OFF

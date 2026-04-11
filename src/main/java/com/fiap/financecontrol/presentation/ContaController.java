@@ -5,7 +5,7 @@ import com.fiap.financecontrol.domains.Conta;
 import com.fiap.financecontrol.domains.TipoConta;
 import com.fiap.financecontrol.presentation.dtos.request.ContaRequestDto;
 import com.fiap.financecontrol.presentation.dtos.response.ContaResponseDto;
-import com.fiap.financecontrol.services.*;
+import com.fiap.financecontrol.services.conta.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +15,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -31,16 +33,19 @@ public class ContaController {
     private final FindByIdContaService findByIdContaService;
     private final DeleteContaService deleteContaService;
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ContaResponseDto>> getConta(@PathVariable Long id) {
         Conta conta = findByIdContaService.executeOrThrow(id);
         ContaResponseDto dto = ContaResponseDto.fromEntity(conta);
         EntityModel<ContaResponseDto> model = EntityModel.of(dto);
-        addLinksToConta(model, id, dto.getClienteId());
+        addLinksToConta(model, id, dto.getUsuarioId());
         return ResponseEntity.ok(model);
     }
 
     @GetMapping
+
     public ResponseEntity<PagedModel<EntityModel<ContaResponseDto>>> getContas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction,
@@ -74,7 +79,7 @@ public class ContaController {
         PagedModel<EntityModel<ContaResponseDto>> pagedModel = PagedModel.of(
                 response.map(dto -> {
                     EntityModel<ContaResponseDto> model = EntityModel.of(dto);
-                    addLinksToConta(model, dto.getId(), dto.getClienteId());
+                    addLinksToConta(model, dto.getId(), dto.getUsuarioId());
                     return model;
                 }).toList(),
                 pageMetadata
@@ -95,50 +100,53 @@ public class ContaController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<ContaResponseDto>> createConta(@RequestBody @Valid ContaRequestDto contaDto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EntityModel<ContaResponseDto>> createConta(@RequestBody @Valid ContaRequestDto contaDto, @AuthenticationPrincipal Usuario usuario) {
         Conta conta = contaDto.toEntity();
         
-        if (contaDto.getClienteId() != null) {
-            conta.setUsuario(Usuario.builder().id(contaDto.getClienteId()).build());
+        if (usuario.getId() != null) {
+            conta.setUsuario(Usuario.builder().id(usuario.getId()).build());
         }
         
-        Conta contaCriada = createContaService.execute(conta);
+        Conta contaCriada = createContaService.criarConta(conta);
         ContaResponseDto dto = ContaResponseDto.fromEntity(contaCriada);
         EntityModel<ContaResponseDto> model = EntityModel.of(dto);
-        addLinksToConta(model, contaCriada.getId(), dto.getClienteId());
+        addLinksToConta(model, contaCriada.getId(), dto.getUsuarioId());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .location(linkTo(methodOn(ContaController.class).getConta(contaCriada.getId())).toUri())
                 .body(model);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<ContaResponseDto>> updateConta(@PathVariable Long id, @RequestBody @Valid ContaRequestDto contaDto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EntityModel<ContaResponseDto>> updateConta(@PathVariable Long id, @RequestBody @Valid ContaRequestDto contaDto,@AuthenticationPrincipal Usuario usuario) {
         Conta conta = contaDto.toEntity();
         conta.setId(id);
         
-        if (contaDto.getClienteId() != null) {
-            conta.setUsuario(Usuario.builder().id(contaDto.getClienteId()).build());
+        if ( usuario.getId()!= null) {
+            conta.setUsuario(Usuario.builder().id(usuario.getId()).build());
         }
         
         Conta contaAtualizada = updateContaService.execute(conta);
         ContaResponseDto dto = ContaResponseDto.fromEntity(contaAtualizada);
         EntityModel<ContaResponseDto> model = EntityModel.of(dto);
-        addLinksToConta(model, id, dto.getClienteId());
+        addLinksToConta(model, id, dto.getUsuarioId());
         return ResponseEntity.ok(model);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteConta(@PathVariable Long id) {
+    public void deleteConta(@PathVariable Long id,@AuthenticationPrincipal Usuario usuario) {
         deleteContaService.execute(id);
     }
 
-    private void addLinksToConta(EntityModel<ContaResponseDto> model, Long id, Long clienteId) {
+    private void addLinksToConta(EntityModel<ContaResponseDto> model, Long id, Long usuarioId) {
         model.add(linkTo(methodOn(ContaController.class).getConta(id)).withSelfRel());
-        model.add(linkTo(methodOn(ContaController.class).updateConta(id, null)).withRel("update"));
+        model.add(linkTo(methodOn(ContaController.class).updateConta(id, null,null)).withRel("update"));
         model.add(linkTo(ContaController.class).slash(id).withRel("delete"));
-        if (clienteId != null) {
-            model.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioController.class).getCliente(clienteId)).withRel("usuario"));
+        if (usuarioId != null) {
+            model.add(WebMvcLinkBuilder.linkTo(methodOn(UsuarioController.class).getUsuario(usuarioId)).withRel("usuario"));
         }
         model.add(WebMvcLinkBuilder.linkTo(methodOn(RegistroContabilController.class).getRegistrosContabeis(0, Sort.Direction.ASC, 10, id, null, null, null)).withRel("registros-contabeis"));
     }

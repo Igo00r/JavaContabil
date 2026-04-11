@@ -3,9 +3,10 @@ package com.fiap.financecontrol.presentation;
 import com.fiap.financecontrol.domains.CentroCusto;
 import com.fiap.financecontrol.domains.Conta;
 import com.fiap.financecontrol.domains.RegistroContabil;
+import com.fiap.financecontrol.presentation.dtos.RelatorioSaudeDto;
 import com.fiap.financecontrol.presentation.dtos.request.RegistroContabilRequestDto;
 import com.fiap.financecontrol.presentation.dtos.response.RegistroContabilResponseDto;
-import com.fiap.financecontrol.services.*;
+import com.fiap.financecontrol.services.registroContabil.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -26,11 +28,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 public class RegistroContabilController {
 
+
+
     private final CreateRegistroContabilService createRegistroContabilService;
     private final UpdateRegistroContabilService updateRegistroContabilService;
     private final ListRegistrosContabeisService listRegistrosContabeisService;
     private final FindByIdRegistroContabilService findByIdRegistroContabilService;
     private final DeleteRegistroContabilService deleteRegistroContabilService;
+    private final RelatorioContabilService relatorioContabilService;
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<RegistroContabilResponseDto>> getRegistroContabil(@PathVariable Long id) {
@@ -42,6 +47,7 @@ public class RegistroContabilController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PagedModel<EntityModel<RegistroContabilResponseDto>>> getRegistrosContabeis(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction,
@@ -116,6 +122,7 @@ public class RegistroContabilController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EntityModel<RegistroContabilResponseDto>> updateRegistroContabil(@PathVariable Long id, @RequestBody @Valid RegistroContabilRequestDto registroDto) {
         RegistroContabil registro = registroDto.toEntity();
         registro.setId(id);
@@ -131,6 +138,7 @@ public class RegistroContabilController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteRegistroContabil(@PathVariable Long id) {
         deleteRegistroContabilService.execute(id);
@@ -147,5 +155,14 @@ public class RegistroContabilController {
             model.add(linkTo(methodOn(CentroCustoController.class).getCentroCusto(centroCustoId)).withRel("centro-custo"));
         }
         model.add(linkTo(methodOn(VendasController.class).getVendas(0, Sort.Direction.ASC, 10, null, id)).withRel("vendas"));
+    }
+
+    @GetMapping("/saude-financeira")
+    public ResponseEntity<RelatorioSaudeDto> getSaudeFinanceira(
+            @RequestParam Long centroCustoId,
+            @RequestParam int mes,
+            @RequestParam int ano) {
+
+        return ResponseEntity.ok(relatorioContabilService.gerarRelatorio(centroCustoId, mes, ano));
     }
 }

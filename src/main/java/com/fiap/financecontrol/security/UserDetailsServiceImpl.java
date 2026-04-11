@@ -1,7 +1,6 @@
 package com.fiap.financecontrol.security;
 
-import com.fiap.financecontrol.gateways.UsuarioRepository;
-import lombok.RequiredArgsConstructor;
+import com.fiap.financecontrol.repositories.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

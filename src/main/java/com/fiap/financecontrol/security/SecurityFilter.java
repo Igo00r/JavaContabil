@@ -2,7 +2,7 @@ package com.fiap.financecontrol.security;
 
 
 
-import com.fiap.financecontrol.gateways.UsuarioRepository;
+import com.fiap.financecontrol.repositories.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +31,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         System.out.println("uri " + request.getRequestURI());
-        if (request.getRequestURI().startsWith("/open-finance/webhooks/pluggy")) {
+        String path = request.getServletPath();
+        if (path.startsWith("/v3/api-docs") ||
+                path.startsWith("/api-docs") ||
+                path.startsWith("/swagger-ui") ||
+                path.startsWith("/webjars")) {
             filterChain.doFilter(request, response);
             return;
         }

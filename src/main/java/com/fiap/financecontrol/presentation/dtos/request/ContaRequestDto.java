@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class ContaRequestDto {
 
@@ -17,12 +19,18 @@ public class ContaRequestDto {
     @NotNull(message = "Tipo da conta é obrigatório")
     private TipoConta tipo;
 
-    private Long clienteId;
+
+    @NotNull(message = "Saldo atual é obrigatório")
+    private BigDecimal saldo;
+
+
+
 
     public Conta toEntity() {
         return Conta.builder()
                 .nomeConta(this.nomeConta)
                 .tipo(this.tipo)
+                .saldo(this.saldo)
                 .build();
     }
 }

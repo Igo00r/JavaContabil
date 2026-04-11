@@ -4,7 +4,7 @@ https://www.youtube.com/watch?v=kAkMJfVJ2lc
 
 ## Descrição
 
-API RESTful desenvolvida em Spring Boot para gerenciamento de dados financeiros e contábeis, incluindo clientes, centros de custo, contas, registros contábeis e vendas.
+API RESTful desenvolvida em Spring Boot para gerenciamento de dados financeiros e contábeis, incluindo usuarios, centros de custo, contas, registros contábeis e vendas.
 
 
 ## Tecnologias Utilizadas
@@ -18,6 +18,9 @@ API RESTful desenvolvida em Spring Boot para gerenciamento de dados financeiros 
 - **Bean Validation**
 - **SpringDoc OpenAPI** (Swagger)
 - **Maven**
+- **RabbitMQ**
+- **OpenFeign**
+- **Flyway**
 
 ## Arquitetura
 
@@ -31,7 +34,7 @@ A aplicação segue os princípios de:
 
 #### API Java (Este Projeto)
 Esta API Spring Boot gerencia os domínios financeiros e contábeis:
-- **Clientes**: Gestão de clientes
+- **Usuarios**: Gestão de usuarios
 - **Centros de Custo**: Organização contábil
 - **Contas Contábeis**: Contas de receita e despesa
 - **Registros Contábeis**: Lançamentos financeiros
@@ -50,11 +53,16 @@ Os dados são compartilhados através do mesmo banco de dados Oracle, permitindo
 
 ```
 com.fiap.financecontrol/
-├── domains/           # Entidades JPA
-├── gateways/          # Controllers e Repositories
+├── clients/          # Clients Feign para comunicação entre serviços (HTTP)
+├── config/           # Configurações gerais (RabbitMQ, Feign, Security, Beans)
+├── domains/          # Entidades JPA (modelo de domínio)
+├── exceptions/       # Tratamento de exceções e handlers globais
+├── presentation/     # Camada de entrada (Controllers REST)
 │   └── dtos/         # DTOs de Request/Response
-├── services/         # Lógica de negócio
-└── configurations/   # Configurações e Beans
+├── repositories/     # Interfaces de acesso a dados (Spring Data JPA)
+├── security/         # Configurações de segurança (JWT, filtros, autenticação)
+├── services/  
+
 ```
 
 ## Como Executar a Aplicação
@@ -132,30 +140,30 @@ A API implementa **HATEOAS nível 3** do Richardson Maturity Model. Todas as res
 ```json
 {
   "id": 1,
-  "nomeCliente": "João Silva",
+  "nome": "João Silva",
   "email": "joao@email.com",
   "_links": {
     "self": {
-      "href": "http://localhost:8080/fiap/clientes/1"
+      "href": "http://localhost:8080/fiap/usuarios/1"
     },
     "update": {
-      "href": "http://localhost:8080/fiap/clientes/1"
+      "href": "http://localhost:8080/fiap/usuarios/1"
     },
     "delete": {
-      "href": "http://localhost:8080/fiap/clientes/1"
+      "href": "http://localhost:8080/fiap/usuarios/1"
     },
     "contas": {
-      "href": "http://localhost:8080/fiap/contas?clienteId=1"
+      "href": "http://localhost:8080/fiap/contas?usuarioId=1"
     },
     "vendas": {
-      "href": "http://localhost:8080/fiap/vendas?clienteId=1"
+      "href": "http://localhost:8080/fiap/vendas?usuarioId=1"
     }
   }
 }
 ```
 
 #### Navegação via Links
-Os clientes podem navegar pela API seguindo os links fornecidos nas respostas:
+Os usuarios podem navegar pela API seguindo os links fornecidos nas respostas:
 - **self**: Link para o próprio recurso
 - **update**: Link para atualizar o recurso
 - **delete**: Link para deletar o recurso
@@ -171,33 +179,33 @@ Nas respostas paginadas, são fornecidos links de navegação:
 
 ### Endpoints Disponíveis
 
-#### Clientes
-- `GET /fiap/clientes` - Listar clientes (com paginação, filtros e links HATEOAS)
-- `GET /fiap/clientes/{id}` - Buscar usuario por ID (com links HATEOAS)
-- `POST /fiap/clientes` - Criar novo usuario (retorna com links HATEOAS)
-- `PUT /fiap/clientes/{id}` - Atualizar usuario (retorna com links HATEOAS)
-- `DELETE /fiap/clientes/{id}` - Deletar usuario
+#### Usuarios
+- `GET /fiap/usuarios` - Listar usuarios (com paginação, filtros e links HATEOAS )- ROLE -> ADMIN
+- `GET /fiap/usuarios/{id}` - Buscar usuario por ID (com links HATEOAS)
+- `POST /fiap/usuarios` - Criar novo usuario (retorna com links HATEOAS)
+- `PUT /fiap/usuarios/{id}` - Atualizar usuario (retorna com links HATEOAS)
+- `DELETE /fiap/usuarios/{id}` - Deletar usuario - ROLE -> ADMIN
 
 #### Centros de Custo
-- `GET /fiap/centros-custo` - Listar centros de custo (com paginação e links HATEOAS)
+- `GET /fiap/centros-custo` - Listar centros de custo (com paginação e links HATEOAS) 
 - `GET /fiap/centros-custo/{id}` - Buscar centro de custo por ID (com links HATEOAS)
-- `POST /fiap/centros-custo` - Criar novo centro de custo (retorna com links HATEOAS)
-- `PUT /fiap/centros-custo/{id}` - Atualizar centro de custo (retorna com links HATEOAS)
-- `DELETE /fiap/centros-custo/{id}` - Deletar centro de custo
+- `POST /fiap/centros-custo` - Criar novo centro de custo (retorna com links HATEOAS) - ROLE -> ADMIN
+- `PUT /fiap/centros-custo/{id}` - Atualizar centro de custo (retorna com links HATEOAS) - ROLE -> ADMIN
+- `DELETE /fiap/centros-custo/{id}` - Deletar centro de custo - ROLE -> ADMIN
 
 #### Contas
 - `GET /fiap/contas` - Listar contas (com filtros por tipo e links HATEOAS)
 - `GET /fiap/contas/{id}` - Buscar conta por ID (com links HATEOAS)
-- `POST /fiap/contas` - Criar nova conta (retorna com links HATEOAS)
-- `PUT /fiap/contas/{id}` - Atualizar conta (retorna com links HATEOAS)
-- `DELETE /fiap/contas/{id}` - Deletar conta
+- `POST /fiap/contas` - Criar nova conta (retorna com links HATEOAS) - ROLE -> ADMIN
+- `PUT /fiap/contas/{id}` - Atualizar conta (retorna com links HATEOAS ) - ROLE -> ADMIN
+- `DELETE /fiap/contas/{id}` - Deletar conta - ROLE -> ADMIN
 
 #### Registros Contábeis
-- `GET /fiap/registros-contabeis` - Listar registros contábeis (com filtros e links HATEOAS)
-- `GET /fiap/registros-contabeis/{id}` - Buscar registro por ID (com links HATEOAS)
+- `GET /fiap/registros-contabeis` - Listar registros contábeis (com filtros e links HATEOAS ) - ROLE -> ADMIN
+- `GET /fiap/registros-contabeis/{id}` - Buscar registro por ID (com links HATEOAS )
 - `POST /fiap/registros-contabeis` - Criar novo registro (retorna com links HATEOAS)
-- `PUT /fiap/registros-contabeis/{id}` - Atualizar registro (retorna com links HATEOAS)
-- `DELETE /fiap/registros-contabeis/{id}` - Deletar registro
+- `PUT /fiap/registros-contabeis/{id}` - Atualizar registro (retorna com links HATEOAS ) - ROLE -> ADMIN
+- `DELETE /fiap/registros-contabeis/{id}` - Deletar registro - ROLE -> ADMIN
 
 #### Vendas
 - `GET /fiap/vendas` - Listar vendas (com filtros e links HATEOAS)
@@ -215,11 +223,11 @@ Todos os endpoints de listagem suportam:
 
 ### Exemplos de Requisições
 
-#### Criar Cliente
+#### Criar usuario
 ```json
-POST /fiap/clientes
+POST /fiap/usuarios
 {
-  "nomeCliente": "João Silva",
+  "bine": "João Silva",
   "cpfCnpj": "12345678901",
   "email": "joao@email.com",
   "senha": "senha123",
@@ -233,7 +241,6 @@ POST /fiap/contas
 {
   "nomeConta": "Receita de Vendas",
   "tipo": "R",
-  "clienteId": 1
 }
 ```
 
@@ -250,7 +257,7 @@ POST /fiap/registros-contabeis
 ## Diagramas
 
 ### Diagrama de Entidade-Relacionamento (DER)
-![DER](docs/er_diagram.png)
+![DER](docs/er_diagrama.png)
 
 **Nota**: O diagrama inclui as tabelas IoT (`dispositivo_iot`, `servico`, `venda_evento`) que são gerenciadas pelo módulo Oracle Apex separado.
 
@@ -288,8 +295,10 @@ mvn test jacoco:report
 
 ### Testes Disponíveis
 - `FinanceControlApplicationTests` - Teste de contexto Spring
-- `ClienteRepositoryTest` - Testes de repository
-- `ClienteControllerTest` - Testes de controller com MockMvc
+- `UsuarioRepositoryTest` - Testes de repository
+- `UsuarioControllerTest` - Testes de controller com MockMvc
+- `CreateVendasServiceTest` - Teste do service com MockMvc
+- `RelatorioContabilServiceTest` - Teste do service com MockMvc
 
 ## Configurações Adicionais
 
@@ -299,7 +308,6 @@ mvn test jacoco:report
 
 ### Logs
 A aplicação gera logs detalhados para:
-- Queries SQL (nível DEBUG)
 - Operações de CRUD
 - Erros e exceções
 
@@ -312,7 +320,7 @@ A aplicação gera logs detalhados para:
 
 ### Oracle Database
 O banco de dados Oracle deve ser configurado com as seguintes tabelas:
-- `CLIENTE` - Dados dos clientes
+- `Usuario` - Dados dos usuarios
 - `CENTRO_CUSTO` - Centros de custo
 - `CONTA_CONTABIL` - Contas contábeis (renomeada de CONTA na Sprint 2)
 - `REG_CONT` - Registros contábeis
@@ -340,12 +348,12 @@ curl http://localhost:8080/actuator/health
 
 ### 2. Testar Endpoints
 
-#### Criar Cliente
+#### Criar usuario
 ```bash
-curl -X POST http://localhost:8080/fiap/clientes \
+curl -X POST http://localhost:8080/fiap/usuarios \
   -H "Content-Type: application/json" \
   -d '{
-    "nomeCliente": "João Silva",
+    "nome": "João Silva",
     "cpfCnpj": "12345678901",
     "email": "joao@email.com",
     "senha": "senha123",
@@ -353,9 +361,9 @@ curl -X POST http://localhost:8080/fiap/clientes \
   }'
 ```
 
-#### Listar Clientes
+#### Listar Usuarios
 ```bash
-curl -X GET "http://localhost:8080/fiap/clientes?page=0&size=10&direction=ASC"
+curl -X GET "http://localhost:8080/fiap/usuarios?page=0&size=10&direction=ASC"
 ```
 
 #### Criar Centro de Custo
@@ -371,21 +379,82 @@ curl -X POST http://localhost:8080/fiap/centros-custo \
 
 #### Oracle FIAP
 ```sql
--- Verificar clientes
-SELECT * FROM CLIENTE ORDER BY id_cliente;
+-- Verificar usuarios
+SELECT * FROM USUARIO ORDER BY ID_USUARIO;
 
 -- Verificar centros de custo
 SELECT * FROM CENTRO_CUSTO ORDER BY id_centro_custo;
 
--- Verificar sequences
-SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM DUAL;
+
 ```
+
+
 
 #### H2 Console
 - URL: http://localhost:8080/h2-console
 - JDBC URL: `jdbc:h2:mem:finance-control-db`
 - Username: `sa`
 - Password: (vazio)
+
+#### RabbitMq
+
+Para executar a mensageria do sistema, utilizamos o RabbitMQ via Docker.
+
+
+```bash
+
+  docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+```
+Por que usar esse comando?
+
+- Esse comando sobe um container com o RabbitMQ já configurado, incluindo:
+
+- Porta 5672 → comunicação da aplicação (Spring Boot)
+Porta 15672 → painel de administração web
+  Por que usar Docker?
+
+
+    O uso do Docker foi adotado para:
+
+    Evitar instalação manual do RabbitMQ e suas dependências (como Erlang)
+    Garantir padronização do ambiente
+    Facilitar a execução rápida do projeto
+    Reduzir problemas de compatibilidade entre máquinas
+    
+    Com um único comando, o ambiente de mensageria fica pronto para uso.
+
+Acesso ao painel
+
+```http request
+    http://localhost:15672
+```
+- Usuário: guest
+  - Senha: guest
+
+Uso no projeto
+
+    A mensageria foi implementada para comunicação assíncrona:
+
+    Ao criar uma venda, uma mensagem é enviada para a fila fila-vendas
+    Um consumidor processa essa mensagem e registra o evento no sistema (log)
+
+### Funcionalidades alem de crud
+
+- O serviço CreateVendasService implementa um fluxo completo de negócio para criação de vendas.
+  Durante a execução, ele valida dados via Feign, atualiza saldo de conta, gera registro contábil,
+  persiste a venda e publica um evento em RabbitMQ. Dessa forma, o sistema demonstra comunicação
+  síncrona e assíncrona, indo além de operações CRUD e cobrindo parte relevante do processo de negócio.
+```http request
+    POST - http://localhost:8080/fiap/vendas
+```
+
+- O serviço RelatorioContabilService implementa um fluxo completo de análise contábil. A partir de um centro de custo e período (mês/ano), o sistema recupera os registros contábeis, classifica-os em entradas e saídas, calcula o saldo líquido e retorna um relatório consolidado.
+  Esse processo envolve regras de negócio e agregação de dados, caracterizando um fluxo funcional além de operações CRUD simples.
+
+```http request
+    GET - http://localhost:8080/fiap/registros-contabeis/saude-financeira?centroCustoId=1001&mes=4&ano=2026
+```
+
 
 ## Status do Projeto
 
@@ -413,16 +482,22 @@ SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM
 - [x] Collection Postman atualizada com testes HATEOAS
 - [x] Documentação atualizada
 
-Para mais detalhes sobre as mudanças da Sprint 2, consulte: [docs/SPRINT2_MUDANCAS.md](docs/SPRINT2_MUDANCAS.md)
+### Sprint 3 ✅
+
+- [x] Implementação do OpenFeign 
+- [x] Implementação do rabbitmq (Mensageria)
+- [x] Implementação do spring security
+- [x] Dois tipos de usuarios no sistema - (Admin e User), com permissões diferentes.
+- [x] Funcionalidades de fluxos completos alem de CRUD
 
 ## Funcionalidades Implementadas
 
 ### ✅ Entidades
-- **Cliente**: Gestão de clientes com validações de CPF/CNPJ e email únicos
+- **Usuario**: Gestão de usuarios com validações de CPF/CNPJ e email únicos
 - **CentroCusto**: Centros de custo para organização contábil
 - **Conta**: Contas contábeis (Receita/Despesa) com relacionamento opcional com usuario
 - **RegistroContabil**: Lançamentos contábeis com auditoria automática
-- **Vendas**: Registro de vendas vinculadas a clientes e registros contábeis
+- **Vendas**: Registro de vendas vinculadas a usuarios e registros contábeis
 
 ### ✅ API RESTful
 - **Nível 3 Richardson Maturity Model** (HATEOAS implementado)
@@ -436,5 +511,9 @@ Para mais detalhes sobre as mudanças da Sprint 2, consulte: [docs/SPRINT2_MUDAN
 ### ✅ Arquitetura
 - **POO**: Encapsulamento, herança, polimorfismo
 - **Coesão**: Cada classe com responsabilidade única
-- **Desacoplamento**: Controllers → Services → Repositories
+- **Desacoplamento**: Controllers → Services → Repositories, Feign Client, RabbitMq
 - **Padrões**: Repository, Service Layer, DTO, Strategy
+- **Persistência e Versionamento**: FlyWay
+
+
+

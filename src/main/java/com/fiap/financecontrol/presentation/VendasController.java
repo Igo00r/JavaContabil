@@ -1,11 +1,10 @@
 package com.fiap.financecontrol.presentation;
 
 import com.fiap.financecontrol.domains.Usuario;
-import com.fiap.financecontrol.domains.RegistroContabil;
 import com.fiap.financecontrol.domains.Vendas;
 import com.fiap.financecontrol.presentation.dtos.VendasRequestDto;
 import com.fiap.financecontrol.presentation.dtos.VendasResponseDto;
-import com.fiap.financecontrol.services.*;
+import com.fiap.financecontrol.services.venda.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +14,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -30,6 +30,10 @@ public class VendasController {
     private final ListVendasService listVendasService;
     private final FindByIdVendasService findByIdVendasService;
     private final DeleteVendasService deleteVendasService;
+
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<VendasResponseDto>> getVenda(@PathVariable Long id) {
@@ -95,11 +99,11 @@ public class VendasController {
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<VendasResponseDto>> createVenda(@RequestBody @Valid VendasRequestDto vendaDto) {
+    public ResponseEntity<EntityModel<VendasResponseDto>> createVenda(@AuthenticationPrincipal Usuario usuario, @RequestBody @Valid VendasRequestDto vendaDto) {
         Vendas venda = vendaDto.toEntity();
         
-        venda.setUsuario(Usuario.builder().id(vendaDto.getClienteId()).build());
-        venda.setRegistroContabil(RegistroContabil.builder().id(vendaDto.getRegistroContabilId()).build());
+        venda.setUsuario(Usuario.builder().id(usuario.getId()).build());
+
         
         Vendas vendaCriada = createVendasService.execute(venda);
         VendasResponseDto dto = VendasResponseDto.fromEntity(vendaCriada);
@@ -111,12 +115,12 @@ public class VendasController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<VendasResponseDto>> updateVenda(@PathVariable Long id, @RequestBody @Valid VendasRequestDto vendaDto) {
+    public ResponseEntity<EntityModel<VendasResponseDto>> updateVenda(@AuthenticationPrincipal Usuario usuario,@PathVariable Long id, @RequestBody @Valid VendasRequestDto vendaDto) {
         Vendas venda = vendaDto.toEntity();
         venda.setId(id);
         
-        venda.setUsuario(Usuario.builder().id(vendaDto.getClienteId()).build());
-        venda.setRegistroContabil(RegistroContabil.builder().id(vendaDto.getRegistroContabilId()).build());
+        venda.setUsuario(Usuario.builder().id(usuario.getId()).build());
+
         
         Vendas vendaAtualizada = updateVendasService.execute(venda);
         VendasResponseDto dto = VendasResponseDto.fromEntity(vendaAtualizada);
@@ -133,10 +137,12 @@ public class VendasController {
 
     private void addLinksToVenda(EntityModel<VendasResponseDto> model, Long id, Long clienteId, Long registroContabilId) {
         model.add(linkTo(methodOn(VendasController.class).getVenda(id)).withSelfRel());
-        model.add(linkTo(methodOn(VendasController.class).updateVenda(id, null)).withRel("update"));
+        model.add(linkTo(methodOn(VendasController.class)
+                .updateVenda(null, id, new VendasRequestDto()))
+                .withRel("update"));
         model.add(linkTo(VendasController.class).slash(id).withRel("delete"));
         if (clienteId != null) {
-            model.add(linkTo(methodOn(UsuarioController.class).getCliente(clienteId)).withRel("usuario"));
+            model.add(linkTo(methodOn(UsuarioController.class).getUsuario(clienteId)).withRel("usuario"));
         }
         if (registroContabilId != null) {
             model.add(WebMvcLinkBuilder.linkTo(methodOn(RegistroContabilController.class).getRegistroContabil(registroContabilId)).withRel("registro-contabil"));

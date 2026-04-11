@@ -1,6 +1,6 @@
 spring:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
   application:
@@ -9,6 +9,11 @@ spring:
     active: ${PROFILE:dev}
   hateoas:
     use-hal-as-default-json-media-type: false
+  rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
 
 springdoc:
   api-docs:
@@ -31,3 +36,8 @@ api:
   security:
     token:
       secret: ${JWT_SECRET:12345678}
+logging:
+  level:
+    org.hibernate.SQL: OFF
+    org.hibernate.orm.jdbc.bind: OFF
+    org.hibernate.type.descriptor.sql: OFF

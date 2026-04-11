@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "VENDAS")
 @Getter
@@ -29,4 +31,8 @@ public class Vendas {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reg_cont_id_reg_cont", nullable = false)
     private RegistroContabil registroContabil;
+
+    @NotNull(message = "O valor total da venda não pode ser nulo")
+    @Column(name = "valor_total", precision = 19, scale = 2, nullable = false)
+    private BigDecimal valorTotal;
 }
