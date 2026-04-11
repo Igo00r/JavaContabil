@@ -126,6 +126,48 @@ A aplicação estará disponível em: `http://localhost:8080`
 
 ## Documentação da API
 
+####  A aplicação utiliza Spring Security, portanto é necessário estar autenticado para 
+#### acessar os endpoints protegidos.
+
+
+     Realize o post para registrar usuarios com diferentes roles
+    
+
+      -POST
+      http://localhost:8080/fiap/autenticar/registrar
+    
+    {
+      "email": "useradmin@gmail.com",
+      "senha": "1234",
+      "cpfCnpj": "50789367667"
+    }
+
+    {
+      "email": "usernormal@gmail.com",
+      "senha": "1234",
+      "cpfCnpj": "52789167667"
+    }
+
+    (ao registrar no banco de dados, favor alterar manualmente a role do userAdmin, para -> ADMIN)
+#### Efetuar o login para geração do tokenJwt -> será usado a partir de agora em todas as requisições
+    
+    
+    -POST
+        http://localhost:8080/fiap/autenticar/login
+    
+      
+      {
+      "email":"useradmin@email.com",
+      "password":"123456"
+      }
+
+    Response:
+      {
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6IkphdmFDb250YWJpbCIsImV4cCI6MTc3NTkyNzI5M30.dGyjRPnOCqHe0c9y7o_B24W7QB7k_jcnYfzvtkxXNyg"
+      }
+      
+
+
 ### Swagger/OpenAPI
 
 - **Swagger UI**: http://localhost:8080/swagger-ui.html

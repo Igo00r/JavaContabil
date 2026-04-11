@@ -29,10 +29,10 @@ public class SecurityConfigMvc {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityFilter securityFilter) throws Exception {
 
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // GARANTE O USO DO BEAN ACIMA
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // 👈 ESSENCIAL PRO H2
                 .authorizeHttpRequests(auth -> auth
-                        // LIBERA O OPTIONS PARA TODAS AS ROTAS (Isso evita o 403 no pre-flight)
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/login.html",
@@ -40,12 +40,10 @@ public class SecurityConfigMvc {
                                 "/fiap/autenticar/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**",
-                                "/actuator/**"
-
+                                "/actuator/**",
+                                "/h2-console/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
