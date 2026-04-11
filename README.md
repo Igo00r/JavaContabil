@@ -227,7 +227,7 @@ Todos os endpoints de listagem suportam:
 ```json
 POST /fiap/usuarios
 {
-  "bine": "João Silva",
+  "nome": "João Silva",
   "cpfCnpj": "12345678901",
   "email": "joao@email.com",
   "senha": "senha123",
