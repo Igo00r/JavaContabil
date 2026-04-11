@@ -21,6 +21,7 @@ API RESTful desenvolvida em Spring Boot para gerenciamento de dados financeiros 
 - **RabbitMQ**
 - **OpenFeign**
 - **Flyway**
+- **Spring security**
 
 ## Arquitetura
 
@@ -29,6 +30,7 @@ A aplicação segue os princípios de:
 - **Coesão e Desacoplamento**
 - **Padrões de Projeto** (Repository, Service Layer, DTO)
 - **API RESTful** (Nível 3 - Richardson Maturity Model com HATEOAS)
+- **Segurança** (Jwt,roles,algoritimo HMAC256)
 
 ### Arquitetura e Módulos
 
@@ -125,6 +127,10 @@ java -jar target/finance-control-0.0.1-SNAPSHOT.jar
 A aplicação estará disponível em: `http://localhost:8080`
 
 ## Documentação da API
+
+###  A aplicação utiliza Spring Security, portanto é necessário estar autenticado para acessar os endpoints protegidos.
+
+
 
 ### Swagger/OpenAPI
 
