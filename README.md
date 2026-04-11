@@ -166,7 +166,7 @@ A aplicação estará disponível em: `http://localhost:8080`
 
     Response:
       {
-      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6IkphdmFDb250YWJpbCIsImV4cCI6MTc3NTkyNzI5M30.dGyjRPnOCqHe0c9y7o_B24W7QB7k_jcnYfzvtkxXNyg"
+      "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
       }
       
 
