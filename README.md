@@ -21,6 +21,7 @@ API RESTful desenvolvida em Spring Boot para gerenciamento de dados financeiros 
 - **RabbitMQ**
 - **OpenFeign**
 - **Flyway**
+- **Spring security**
 
 ## Arquitetura
 
@@ -29,6 +30,7 @@ A aplicação segue os princípios de:
 - **Coesão e Desacoplamento**
 - **Padrões de Projeto** (Repository, Service Layer, DTO)
 - **API RESTful** (Nível 3 - Richardson Maturity Model com HATEOAS)
+- **Segurança** (Jwt,roles,algoritimo HMAC256)
 
 ### Arquitetura e Módulos
 
@@ -126,6 +128,7 @@ A aplicação estará disponível em: `http://localhost:8080`
 
 ## Documentação da API
 
+<<<<<<< HEAD
 ####  A aplicação utiliza Spring Security, portanto é necessário estar autenticado para 
 #### acessar os endpoints protegidos.
 
@@ -167,6 +170,11 @@ A aplicação estará disponível em: `http://localhost:8080`
       }
       
 
+=======
+###  A aplicação utiliza Spring Security, portanto é necessário estar autenticado para acessar os endpoints protegidos.
+
+
+>>>>>>> 18de3a067ec81306224f430ea8f99cb21bb74afe
 
 ### Swagger/OpenAPI
 
@@ -269,7 +277,7 @@ Todos os endpoints de listagem suportam:
 ```json
 POST /fiap/usuarios
 {
-  "bine": "João Silva",
+  "nome": "João Silva",
   "cpfCnpj": "12345678901",
   "email": "joao@email.com",
   "senha": "senha123",
