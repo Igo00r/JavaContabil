@@ -170,11 +170,6 @@ A aplicação estará disponível em: `http://localhost:8080`
       }
       
 
-=======
-###  A aplicação utiliza Spring Security, portanto é necessário estar autenticado para acessar os endpoints protegidos.
-
-
->>>>>>> 18de3a067ec81306224f430ea8f99cb21bb74afe
 
 ### Swagger/OpenAPI
 
@@ -256,6 +251,7 @@ Nas respostas paginadas, são fornecidos links de navegação:
 - `POST /fiap/registros-contabeis` - Criar novo registro (retorna com links HATEOAS)
 - `PUT /fiap/registros-contabeis/{id}` - Atualizar registro (retorna com links HATEOAS ) - ROLE -> ADMIN
 - `DELETE /fiap/registros-contabeis/{id}` - Deletar registro - ROLE -> ADMIN
+- `GET /fiap/registros-contabeis/"/saude-financeira` - Verificar saude financeira - ROLE -> ADMIN
 
 #### Vendas
 - `GET /fiap/vendas` - Listar vendas (com filtros e links HATEOAS)
@@ -488,7 +484,7 @@ Uso no projeto
     Ao criar uma venda, uma mensagem é enviada para a fila fila-vendas
     Um consumidor processa essa mensagem e registra o evento no sistema (log)
 
-### Funcionalidades alem de crud
+### Funcionalidades alem de crud...
 
 - O serviço CreateVendasService implementa um fluxo completo de negócio para criação de vendas.
   Durante a execução, ele valida dados via Feign, atualiza saldo de conta, gera registro contábil,
@@ -499,7 +495,7 @@ Uso no projeto
 ```
 
 - O serviço RelatorioContabilService implementa um fluxo completo de análise contábil. A partir de um centro de custo e período (mês/ano), o sistema recupera os registros contábeis, classifica-os em entradas e saídas, calcula o saldo líquido e retorna um relatório consolidado.
-  Esse processo envolve regras de negócio e agregação de dados, caracterizando um fluxo funcional além de operações CRUD simples.
+  Esse processo envolve regras de negócio e agregação de dados, caracterizando um fluxo funcional.
 
 ```http request
     GET - http://localhost:8080/fiap/registros-contabeis/saude-financeira?centroCustoId=1001&mes=4&ano=2026

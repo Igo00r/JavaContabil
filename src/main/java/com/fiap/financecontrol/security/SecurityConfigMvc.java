@@ -35,8 +35,6 @@ public class SecurityConfigMvc {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
-                                "/login.html",
-                                "/dashboard.html",
                                 "/fiap/autenticar/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

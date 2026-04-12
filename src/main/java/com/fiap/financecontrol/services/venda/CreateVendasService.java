@@ -3,6 +3,7 @@ package com.fiap.financecontrol.services.venda;
 import com.fiap.financecontrol.clients.ContaClient;
 import com.fiap.financecontrol.clients.UsuarioClient;
 import com.fiap.financecontrol.domains.*;
+import com.fiap.financecontrol.messaging.producer.VendaProducer;
 import com.fiap.financecontrol.repositories.*;
 import com.fiap.financecontrol.presentation.dtos.response.UsuarioResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,7 +29,7 @@ public class CreateVendasService implements VendasDataServiceInterface {
     private final CentroCustoRepository centroCustoRepository;
     private final UsuarioClient usuarioClient;
     private final ContaClient contaClient;
-    private final RabbitTemplate rabbitTemplate;
+    private final VendaProducer vendaProducer;
 
     @Transactional
     public Vendas execute(Vendas vendas) {
@@ -51,9 +54,9 @@ public class CreateVendasService implements VendasDataServiceInterface {
 
         Vendas vendaSalva = salvarVenda(vendas, usuario, registro);
 
-        // LOG: Enviando mensagem para a fila
+
         log.info("Enviando mensagem para fila: Venda criada ID {}", vendaSalva.getId());
-        rabbitTemplate.convertAndSend("fila-vendas", "Venda criada: " + vendaSalva.getId());
+        enviarMensagemPosCommit(vendaSalva);
 
         return vendaSalva;
     }
@@ -61,7 +64,7 @@ public class CreateVendasService implements VendasDataServiceInterface {
     private void validarUsuarioFeign(Vendas vendas) {
         Long usuarioId = vendas.getUsuario().getId();
 
-        // LOG: Chamando o serviço
+
         log.info("Chamando serviço de usuário via Feign - ID: {}", usuarioId);
 
         UsuarioResponseDto usuarioResponse = usuarioClient.buscarClientePorId(usuarioId);
@@ -71,7 +74,7 @@ public class CreateVendasService implements VendasDataServiceInterface {
             throw new RuntimeException("Usuário não encontrado via Feign");
         }
 
-        // LOG: Validação com sucesso
+
         log.info("Usuário validado com sucesso via Feign");
     }
 
@@ -113,6 +116,15 @@ public class CreateVendasService implements VendasDataServiceInterface {
         registro.setDataAtualizacao(LocalDateTime.now());
 
         return registroContabilRepository.save(registro);
+    }
+
+    private void enviarMensagemPosCommit(Vendas venda) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                vendaProducer.enviarMensagemVendaCriada(venda);
+            }
+        });
     }
 
     private Vendas salvarVenda(Vendas vendas, Usuario usuario, RegistroContabil registro) {

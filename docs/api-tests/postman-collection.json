@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Finance Control API - Sprint 2",
+    "name": "Finance Control API - Sprint 3",
     "description": "Collection para testar a API de Gestão Financeira e Contábil com HATEOAS (Nível 3 REST).\n\nEsta collection inclui:\n- Todos os endpoints CRUD para todas as entidades\n- Testes de validação de links HATEOAS\n- Exemplos de navegação via links\n- Validação de paginação com links\n\nVersão: Sprint 2 - HATEOAS Nível 3",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "version": "2.0.0"

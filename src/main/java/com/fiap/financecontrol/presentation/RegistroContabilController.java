@@ -158,6 +158,7 @@ public class RegistroContabilController {
     }
 
     @GetMapping("/saude-financeira")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<RelatorioSaudeDto> getSaudeFinanceira(
             @RequestParam Long centroCustoId,
             @RequestParam int mes,

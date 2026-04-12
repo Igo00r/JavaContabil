@@ -1,4 +1,4 @@
-package com.fiap.financecontrol.security;
+package com.fiap.financecontrol.messaging.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

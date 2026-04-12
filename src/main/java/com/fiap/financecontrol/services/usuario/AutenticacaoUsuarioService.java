@@ -32,7 +32,7 @@ public class AutenticacaoUsuarioService {
 
 
 
-        boolean senhaValida = passwordEncoder.matches(loginDataRequest.password(),user.getPassword());
+        boolean senhaValida = passwordEncoder.matches(loginDataRequest.senha(),user.getPassword());
 
         if (!senhaValida) {
             throw new SenhaInvalidaExeception("Senha invalida");
