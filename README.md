@@ -177,6 +177,7 @@ A aplicação estará disponível em: `http://localhost:8080`
 - **OpenAPI JSON**: http://localhost:8080/api-docs
 
 
+
 ### HATEOAS (Hypermedia as the Engine of Application State)
 
 A API implementa **HATEOAS nível 3** do Richardson Maturity Model. Todas as respostas incluem links que permitem navegação dinâmica pelos recursos:
@@ -224,6 +225,22 @@ Nas respostas paginadas, são fornecidos links de navegação:
 
 ### Endpoints Disponíveis
 
+### Classe DataInitializer
+    A classe DataInitializer é responsável por popular o 
+    banco de dados automaticamente na inicialização da 
+    aplicação, facilitando os teste de 
+    endpoints da apliação.
+
+    Ela utiliza CommandLineRunner para executar rotinas de 
+    criação de dados iniciais, como:
+
+    usuários (admin e comum)
+    centro de custo
+    contas contábeis
+
+
+
+
 #### Usuarios
 - `GET /fiap/usuarios` - Listar usuarios (com paginação, filtros e links HATEOAS )- ROLE -> ADMIN
 - `GET /fiap/usuarios/{id}` - Buscar usuario por ID (com links HATEOAS)
@@ -268,6 +285,8 @@ Todos os endpoints de listagem suportam:
 - `direction` - Direção da ordenação: ASC ou DESC (padrão: ASC)
 
 ### Exemplos de Requisições
+
+
 
 #### Criar usuario
 ```json
