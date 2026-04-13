@@ -251,7 +251,7 @@ Nas respostas paginadas, são fornecidos links de navegação:
 - `POST /fiap/registros-contabeis` - Criar novo registro (retorna com links HATEOAS)
 - `PUT /fiap/registros-contabeis/{id}` - Atualizar registro (retorna com links HATEOAS ) - ROLE -> ADMIN
 - `DELETE /fiap/registros-contabeis/{id}` - Deletar registro - ROLE -> ADMIN
-- `GET /fiap/registros-contabeis/"/saude-financeira` - Verificar saude financeira - ROLE -> ADMIN
+- `GET /fiap/registros-contabeis/"/saude-financeira` - Verificar saude financeira  
 
 #### Vendas
 - `GET /fiap/vendas` - Listar vendas (com filtros e links HATEOAS)
