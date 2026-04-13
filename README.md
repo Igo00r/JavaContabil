@@ -1,3 +1,8 @@
+PITCH SPRINT 3:
+https://youtu.be/4z9T6EHVzg8
+
+
+PITCH SPRINT 2:
 https://www.youtube.com/watch?v=kAkMJfVJ2lc
 
 # Sistema de Gestão Financeira e Contábil
