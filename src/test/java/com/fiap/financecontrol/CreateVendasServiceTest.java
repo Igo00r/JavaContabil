@@ -1,11 +1,17 @@
 package com.fiap.financecontrol;
 
+import com.fiap.financecontrol.domains.events.VendaCriadaEvent;
 import com.fiap.financecontrol.clients.ContaClient;
 import com.fiap.financecontrol.clients.UsuarioClient;
 import com.fiap.financecontrol.domains.*;
-import com.fiap.financecontrol.presentation.dtos.response.UsuarioResponseDto;
+import com.fiap.financecontrol.presentation.dtos.VendasResponseDto;
+import com.fiap.financecontrol.presentation.dtos.request.VendaCreateDto;
 import com.fiap.financecontrol.repositories.*;
-import com.fiap.financecontrol.services.venda.CreateVendasService;
+
+import com.fiap.financecontrol.services.conta.CreditarSaldo;
+import com.fiap.financecontrol.services.usuario.RegistroContabilService;
+import com.fiap.financecontrol.services.venda.VendaService;
+import com.fiap.financecontrol.services.venda.VendaValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -20,16 +27,18 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CreateVendasServiceTest {
 
-    @InjectMocks
-    private CreateVendasService service;
 
+
+    @InjectMocks
+    private VendaService vendaService;
+    @Mock
+    private VendaValidator vendaValidator;
     @Mock
     private VendasRepository vendasRepository;
     @Mock
@@ -45,7 +54,14 @@ class CreateVendasServiceTest {
     @Mock
     private ContaClient contaClient;
     @Mock
+    private CreditarSaldo creditarSaldo;
+    @Mock
+    private RegistroContabilService registroContabilService;
+    @Mock
     private RabbitTemplate rabbitTemplate;
+
+    @Mock
+    private  ApplicationEventPublisher eventPublisher;
 
     @Test
     void deveCriarVendaComSucesso() {
@@ -74,24 +90,29 @@ class CreateVendasServiceTest {
         venda.setRegistroContabil(registro);
         venda.setValorTotal(BigDecimal.TEN);
 
-        // mocks
-        when(usuarioClient.buscarClientePorId(usuarioId)).thenReturn(new UsuarioResponseDto());
-        when(contaClient.buscarContaPorId(contaId)).thenReturn(null);
 
         when(usuarioRepository.findById(usuarioId)).thenReturn(Optional.of(usuario));
         when(contaRepository.findById(contaId)).thenReturn(Optional.of(conta));
         when(centroCustoRepository.findById(centroCustoId)).thenReturn(Optional.of(centro));
 
-        when(registroContabilRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(vendasRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(vendasRepository.save(any())).thenAnswer(invocation -> {
+            Vendas v = invocation.getArgument(0);
+            v.setRegistroContabil(registro);
+            return v;
+        });
 
-        // Act
-        Vendas resultado = service.execute(venda);
 
-        // Assert
+        VendaCreateDto vendaCreateDto = new VendaCreateDto(
+                contaId,centroCustoId,BigDecimal.TEN
+        );
+
+        VendasResponseDto resultado = vendaService.execute(vendaCreateDto,usuarioId);
+
+
         assertNotNull(resultado);
-        assertEquals(BigDecimal.TEN, conta.getSaldo());
+        assertEquals(BigDecimal.ZERO, conta.getSaldo());
 
-        verify(rabbitTemplate).convertAndSend(eq("fila-vendas"), contains("Venda criada"));
+        verify(eventPublisher)
+                .publishEvent(any(VendaCriadaEvent.class));
     }
 }

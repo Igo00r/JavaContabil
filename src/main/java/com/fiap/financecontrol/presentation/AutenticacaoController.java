@@ -4,7 +4,7 @@ import com.fiap.financecontrol.presentation.dtos.request.LoginDataRequest;
 import com.fiap.financecontrol.presentation.dtos.response.LoginDataResponse;
 import com.fiap.financecontrol.presentation.dtos.request.RegistroRequestDto;
 import com.fiap.financecontrol.presentation.dtos.response.RegistroUsuarioResponse;
-import com.fiap.financecontrol.services.usuario.AutenticacaoUsuarioService;
+import com.fiap.financecontrol.services.autenticacaoService.AutenticacaoUsuarioService;
 import com.fiap.financecontrol.services.usuario.RegitrarUsuarioService;
 
 import jakarta.validation.Valid;

@@ -41,3 +41,6 @@ logging:
     org.hibernate.SQL: OFF
     org.hibernate.orm.jdbc.bind: OFF
     org.hibernate.type.descriptor.sql: OFF
+data:
+  mongodb:
+    uri: mongodb://localhost:27017/financecontrol

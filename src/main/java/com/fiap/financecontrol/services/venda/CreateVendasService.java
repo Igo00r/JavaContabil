@@ -29,7 +29,7 @@ public class CreateVendasService implements VendasDataServiceInterface {
     private final CentroCustoRepository centroCustoRepository;
     private final UsuarioClient usuarioClient;
     private final ContaClient contaClient;
-    private final VendaProducer vendaProducer;
+
 
     @Transactional
     public Vendas execute(Vendas vendas) {
@@ -56,7 +56,7 @@ public class CreateVendasService implements VendasDataServiceInterface {
 
 
         log.info("Enviando mensagem para fila: Venda criada ID {}", vendaSalva.getId());
-        enviarMensagemPosCommit(vendaSalva);
+        //enviarMensagemPosCommit(vendaSalva);
 
         return vendaSalva;
     }
@@ -118,14 +118,14 @@ public class CreateVendasService implements VendasDataServiceInterface {
         return registroContabilRepository.save(registro);
     }
 
-    private void enviarMensagemPosCommit(Vendas venda) {
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                vendaProducer.enviarMensagemVendaCriada(venda);
-            }
-        });
-    }
+   // private void enviarMensagemPosCommit(Vendas venda) {
+//        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+//            @Override
+//            public void afterCommit() {
+//                vendaProducer.enviarMensagemVendaCriada(venda);
+//            }
+//        });
+//    }
 
     private Vendas salvarVenda(Vendas vendas, Usuario usuario, RegistroContabil registro) {
         vendas.setUsuario(usuario);

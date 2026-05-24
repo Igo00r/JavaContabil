@@ -30,7 +30,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("uri " + request.getRequestURI());
         String path = request.getServletPath();
         if (path.startsWith("/v3/api-docs") ||
                 path.startsWith("/api-docs") ||

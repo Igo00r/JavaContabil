@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "VENDAS")
@@ -32,7 +33,18 @@ public class Vendas {
     @JoinColumn(name = "reg_cont_id_reg_cont", nullable = false)
     private RegistroContabil registroContabil;
 
-    @NotNull(message = "O valor total da venda não pode ser nulo")
     @Column(name = "valor_total", precision = 19, scale = 2, nullable = false)
     private BigDecimal valorTotal;
+
+    private LocalDateTime dataCriacao;
+
+    public static Vendas criar(Usuario usuario, RegistroContabil registro, BigDecimal valorTotal) {
+        Vendas venda = new Vendas();
+        venda.usuario = usuario;
+        venda.registroContabil = registro;
+        venda.valorTotal = valorTotal;
+
+        venda.dataCriacao = LocalDateTime.now();
+        return venda;
+    }
 }

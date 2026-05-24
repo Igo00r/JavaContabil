@@ -35,6 +35,25 @@ public class DataInitializer {
     }
 
     @Bean
+    @Order(1)
+    public CommandLineRunner criarUsuarioNormal(UsuarioRepository repository, PasswordEncoder encoder) {
+        return args -> {
+
+            if (repository.findByEmail("normaluser@email.com").isEmpty()) {
+                System.out.println("Criando usuario normal...");
+                Usuario admin = new Usuario();
+                admin.setNome("Usuario Normal");
+                admin.setEmail("normaluser@email.com");
+                admin.setSenha(encoder.encode("123"));
+                admin.setCpfCnpj("22415618911");
+                admin.setRole(Role.USER);
+
+                repository.save(admin);
+            }
+        };
+    }
+
+    @Bean
     @Order(2)
     public CommandLineRunner criadUsuarioNormal(UsuarioRepository repository, PasswordEncoder encoder) {
         return args -> {

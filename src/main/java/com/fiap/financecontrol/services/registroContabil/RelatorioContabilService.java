@@ -39,7 +39,7 @@ public class RelatorioContabilService {
             if (reg.getConta().getTipo() == TipoConta.R) {
                 entradas = entradas.add(reg.getValor());
             } else {
-                saídas = saídas.add(reg.getValor().abs()); // .abs() para somar o valor absoluto da saída
+                saídas = saídas.add(reg.getValor().abs());
             }
         }
 
@@ -47,7 +47,7 @@ public class RelatorioContabilService {
 
         // 4. Retornar o DTO consolidado
         return new RelatorioSaudeDto(
-                cc.getNomeCentroCusto(), // Assumindo que tem getNome()
+                cc.getNomeCentroCusto(),
                 entradas,
                 saídas,
                 saldoLiquido,

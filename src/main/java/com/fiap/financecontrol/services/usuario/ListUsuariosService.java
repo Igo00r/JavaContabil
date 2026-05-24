@@ -24,7 +24,7 @@ public class ListUsuariosService {
         return usuarioRepository.findAll(pageable);
     }
 
-    public Page<Usuario> lsitarUsuarioAtivos(int page, int size, Sort.Direction direction) {
+    public Page<Usuario> listarUsuarioAtivos(int page, int size, Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "nomeCliente"));
         return usuarioRepository.findByAtivo("S", pageable);
     }

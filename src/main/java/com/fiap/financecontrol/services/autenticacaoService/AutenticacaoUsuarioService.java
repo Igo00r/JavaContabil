@@ -1,4 +1,4 @@
-package com.fiap.financecontrol.services.usuario;
+package com.fiap.financecontrol.services.autenticacaoService;
 
 import com.fiap.financecontrol.domains.Usuario;
 

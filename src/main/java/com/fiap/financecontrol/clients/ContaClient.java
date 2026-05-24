@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ContaClient {
 
     @GetMapping("/fiap/contas/{id}")
-    ContaResponseDto buscarContaPorId(@PathVariable Long id);
+    ContaResponseDto buscarContaPorId(@PathVariable("id")Long id);
 }

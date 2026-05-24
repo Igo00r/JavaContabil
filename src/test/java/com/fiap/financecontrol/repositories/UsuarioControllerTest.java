@@ -3,7 +3,7 @@ package com.fiap.financecontrol.repositories;
 import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.presentation.dtos.request.UsuarioRequestDto;
 import com.fiap.financecontrol.presentation.UsuarioController;
-import com.fiap.financecontrol.services.usuario.UsuarioService;
+import com.fiap.financecontrol.services.usuario.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,23 @@ class UsuarioControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UpdateUsuarioService updateUsuarioService;
+
+    @Autowired
+    private ListUsuariosService listUsuariosService;
+
+    @Autowired
+    private CreateUsuarioService createUsuarioService;
+
+    @Autowired
+    private FindByIdUsuarioService findByIdUsuarioService;
 
 
-    @MockitoBean
-    private UsuarioService usuarioService;
+
+
+
+
 
 
     @Test
@@ -58,7 +71,7 @@ class UsuarioControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(usuarioService.criarUsuario(any(Usuario.class))).thenReturn(usuario);
+        when(createUsuarioService.execute(any(Usuario.class))).thenReturn(usuario);
 
         // When & Then
         mockMvc.perform(post("/fiap/clientes")
@@ -83,7 +96,7 @@ class UsuarioControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(usuarioService.executeOrThrow(1L)).thenReturn(usuario);
+        when(findByIdUsuarioService.executeOrThrow(1L)).thenReturn(usuario);
 
         // When & Then
         mockMvc.perform(get("/fiap/clientes/1"))
@@ -97,9 +110,7 @@ class UsuarioControllerTest {
     void shouldReturnBadRequestForInvalidData() throws Exception {
         // Given
         UsuarioRequestDto requestDto = new UsuarioRequestDto();
-        // Dados inválidos - campos obrigatórios vazios
 
-        // When & Then
         mockMvc.perform(post("/fiap/clientes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
@@ -126,7 +137,7 @@ class UsuarioControllerTest {
                 .dataCadastro(LocalDateTime.now())
                 .build();
 
-        when(usuarioService.updateUsuario(any(Usuario.class))).thenReturn(usuarioAtualizado);
+        when(updateUsuarioService.execute(any(Usuario.class))).thenReturn(usuarioAtualizado);
 
         // When & Then
         mockMvc.perform(put("/fiap/clientes/1")

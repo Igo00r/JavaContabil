@@ -1,0 +1,7 @@
+package com.fiap.financecontrol.exceptions;
+
+public class ServicoIndisponivelException extends RuntimeException {
+    public ServicoIndisponivelException(String message) {
+        super(message);
+    }
+}

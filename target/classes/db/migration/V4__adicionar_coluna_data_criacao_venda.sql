@@ -1,0 +1,2 @@
+ALTER TABLE VENDAS
+    ADD data_criacao TIMESTAMP;

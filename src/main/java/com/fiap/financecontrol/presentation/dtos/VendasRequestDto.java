@@ -21,11 +21,10 @@ public class VendasRequestDto {
     private Long centroCustoId;
 
     public Vendas toEntity() {
-        // Criamos a estrutura básica que o Service vai completar
+
         Vendas venda = new Vendas();
         venda.setValorTotal(this.valorTotal);
-
-        // Criamos objetos "Dummies" apenas com ID para o Service carregar do banco
+// Criamos objetos "Dummies" apenas com ID para o Service carregar do banco
         Usuario usuario = new Usuario();
 
         venda.setUsuario(usuario);

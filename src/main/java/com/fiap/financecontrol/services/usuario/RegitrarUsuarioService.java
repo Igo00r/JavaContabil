@@ -28,7 +28,7 @@ public class RegitrarUsuarioService {
         String senhaHash = passEconderService.hash(registroRequestDto.senha());
 
         Usuario novoUsuario = Usuario.registrarUsuario(
-                registroRequestDto.email(), registroRequestDto.cpfCnpj(), registroRequestDto.email(),senhaHash
+                registroRequestDto.nome(), registroRequestDto.cpfCnpj(), registroRequestDto.email(),senhaHash
         );
         Usuario usuarioRegistrado = usuarioRepository.save(novoUsuario);
 

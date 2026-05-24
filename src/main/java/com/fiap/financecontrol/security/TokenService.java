@@ -42,27 +42,16 @@ public class TokenService {
 
 
     public String getSubject(String token) {
-        try {
 
-            DecodedJWT decoded = JWT.decode(token);
-            String subject = decoded.getSubject();
+        Algorithm algoritmo = Algorithm.HMAC256(secret);
+        JWTVerifier verifier = JWT.require(algoritmo)
+                .withIssuer("JavaContabil")
+                .build();
 
-            Algorithm algoritmo = Algorithm.HMAC256(secret);
-            JWTVerifier verifier = JWT.require(algoritmo)
-                    .withIssuer("JavaContabil")
-                    .build();
 
-            try {
-                verifier.verify(token);
-            } catch (TokenExpiredException e) {
+        DecodedJWT decoded = verifier.verify(token);
 
-            }
-
-            return subject;
-
-        } catch (JWTVerificationException e) {
-            throw new RuntimeException("Token inválido!");
-        }
+        return decoded.getSubject();
     }
 
     public Instant dataExpiracao() {

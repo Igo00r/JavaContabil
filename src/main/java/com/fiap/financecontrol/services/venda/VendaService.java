@@ -1,54 +1,55 @@
 package com.fiap.financecontrol.services.venda;
 
-import com.fiap.financecontrol.domains.Vendas;
+import com.fiap.financecontrol.domains.events.VendaCriadaEvent;
+import com.fiap.financecontrol.domains.*;
+import com.fiap.financecontrol.presentation.dtos.VendasResponseDto;
+import com.fiap.financecontrol.presentation.dtos.request.VendaCreateDto;
+import com.fiap.financecontrol.repositories.CentroCustoRepository;
+import com.fiap.financecontrol.repositories.ContaRepository;
+import com.fiap.financecontrol.repositories.UsuarioRepository;
 import com.fiap.financecontrol.repositories.VendasRepository;
+import com.fiap.financecontrol.services.conta.CreditarSaldo;
+import com.fiap.financecontrol.services.usuario.RegistroContabilService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class VendaService {
+    private final VendaValidator validator;
+
+
     private final VendasRepository vendasRepository;
+    private final CreditarSaldo creditarSaldo;
+    private final RegistroContabilService registroContabilService;
+    private final UsuarioRepository usuarioRepository;
+    private final ContaRepository contaRepository;
+    private final CentroCustoRepository centroCustoRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public void deleteVenda(Long id) {
-        if (!vendasRepository.existsById(id)) {
-            throw new RuntimeException("Venda não encontrada com ID: " + id);
-        }
-        vendasRepository.deleteById(id);
+    public VendasResponseDto execute(VendaCreateDto dto, Long userId) {
+        log.info("Iniciando execução da venda...");
+       validator.validar(dto,userId);
+       log.info("Validação OK, buscando usuário no banco..."); //
+
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        Conta conta = contaRepository.findById(dto.contaId()).orElseThrow(()->new EntityNotFoundException("Conta inexistente"));
+        CentroCusto centroCusto = centroCustoRepository.findById(dto.centroCustoId()).orElseThrow(()->new RuntimeException("Centro custo inexistente"));
+
+        creditarSaldo.creditar(dto.contaId(), dto.valorTotal());
+        RegistroContabil registro = registroContabilService.execute(conta, centroCusto, dto.valorTotal());
+
+        Vendas vendaSalva = vendasRepository.save(Vendas.criar(usuario, registro, dto.valorTotal()));
+
+        eventPublisher.publishEvent(new VendaCriadaEvent(vendaSalva));
+
+        return VendasResponseDto.fromEntity(vendaSalva);
     }
-
-    public Optional<Vendas> buscaPorIdVenda(Long id) {
-        return vendasRepository.findById(id);
-    }
-
-    public Vendas executeOrThrow(Long id) {
-        return vendasRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Venda não encontrada com ID: " + id));
-    }
-
-    public Page<Vendas> listarVendas(int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "id"));
-        return vendasRepository.findAll(pageable);
-    }
-
-    public Page<Vendas> listarVendasPorCliente(Long clienteId, int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "id"));
-        return vendasRepository.findByUsuarioId(clienteId, pageable);
-    }
-
-    public Page<Vendas> listarVendasPorRegistroContabil(Long registroContabilId, int page, int size, Sort.Direction direction) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "id"));
-        return vendasRepository.findByRegistroContabilId(registroContabilId, pageable);
-    }
-
-
-
 }
