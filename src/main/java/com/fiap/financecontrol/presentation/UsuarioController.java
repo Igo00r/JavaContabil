@@ -35,6 +35,7 @@ public class UsuarioController {
     private final DeleteUsuarioService deleteUsuario;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Buscar usuário por ID", description = "Retorna os detalhes de um usuário específico.")
     @ApiResponse(responseCode = "200", description = "Usuário encontrado")
     @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
