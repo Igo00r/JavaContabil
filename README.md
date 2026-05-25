@@ -1,7 +1,10 @@
 PITCH SPRINT 4:
 
-o vídeo demonstrativo não foi anexado devido a imprevistos na organização final da entrega. Apesar disso, o projeto foi concluído com as funcionalidades implementadas, documentação estruturada e arquivos necessários para análise disponíveis no repositório. Pedimos desculpas pela ausência desse item específico.
+o vídeo demonstrativo não foi anexado devido a imprevistos na organização final da entrega. Apesar disso, o projeto foi concluído com as funcionalidades implementadas, documentação estruturada e arquivos necessários para análise disponíveis no repositório.
 
+Reconhecemos que esse item fazia parte dos critérios avaliativos e entendemos que essa ausência pode impactar a nota. Ainda assim, gostaríamos de reforçar que a solução foi construída e está disponível para análise, com os recursos implementados conforme o escopo solicitado.
+
+Pedimos desculpas pelo transtorno e, caso seja possível considerar os demais itens entregues, ficaremos muito gratos pela compreensão.
 
 PITCH SPRINT 3:
 https://youtu.be/4z9T6EHVzg8
