@@ -1,5 +1,6 @@
 package com.fiap.financecontrol.services.registroContabil;
 
+import com.fiap.financecontrol.exceptions.RegistroContabilNaoEncontradoException;
 import com.fiap.financecontrol.repositories.RegistroContabilRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class DeleteRegistroContabilService {
     @Transactional
     public void execute(Long id) {
         if (!registroContabilRepository.existsById(id)) {
-            throw new RuntimeException("Registro Contábil não encontrado com ID: " + id);
+            throw new RegistroContabilNaoEncontradoException("Registro Contábil não encontrado com ID: " + id);
         }
         registroContabilRepository.deleteById(id);
     }

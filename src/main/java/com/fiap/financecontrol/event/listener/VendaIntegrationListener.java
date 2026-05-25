@@ -1,6 +1,6 @@
-package com.fiap.financecontrol.Listener;
+package com.fiap.financecontrol.event.listener;
 
-import com.fiap.financecontrol.domains.events.VendaCriadaEvent;
+import com.fiap.financecontrol.event.events.VendaCriadaEvent;
 import com.fiap.financecontrol.messaging.producer.VendaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

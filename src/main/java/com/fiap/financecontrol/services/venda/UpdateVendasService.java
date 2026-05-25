@@ -3,9 +3,13 @@ package com.fiap.financecontrol.services.venda;
 import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.RegistroContabil;
 import com.fiap.financecontrol.domains.Vendas;
+import com.fiap.financecontrol.exceptions.RegistroContabilNaoEncontradoException;
+import com.fiap.financecontrol.exceptions.UsuarioNaoEncontradoException;
+import com.fiap.financecontrol.exceptions.VendaNaoEncontradaException;
 import com.fiap.financecontrol.repositories.UsuarioRepository;
 import com.fiap.financecontrol.repositories.RegistroContabilRepository;
 import com.fiap.financecontrol.repositories.VendasRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,17 +26,17 @@ public class UpdateVendasService implements VendasDataServiceInterface {
     @Transactional
     public Vendas execute(Vendas vendas) {
         if (!vendasRepository.existsById(vendas.getId())) {
-            throw new RuntimeException("Venda não encontrada com ID: " + vendas.getId());
+            throw new VendaNaoEncontradaException("Venda não encontrada com ID: " + vendas.getId());
         }
 
         // Validar e carregar usuario
         Usuario usuario = usuarioRepository.findById(vendas.getUsuario().getId())
-                .orElseThrow(() -> new RuntimeException("Usuario não encontrado com ID: " + vendas.getUsuario().getId()));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado com ID: " + vendas.getUsuario().getId()));
         vendas.setUsuario(usuario);
 
         // Validar e carregar registro contábil
         RegistroContabil registroContabil = registroContabilRepository.findById(vendas.getRegistroContabil().getId())
-                .orElseThrow(() -> new RuntimeException("Registro Contábil não encontrado com ID: " + vendas.getRegistroContabil().getId()));
+                .orElseThrow(() -> new RegistroContabilNaoEncontradoException("Registro Contábil não encontrado com ID: " + vendas.getRegistroContabil().getId()));
         vendas.setRegistroContabil(registroContabil);
 
         return vendasRepository.save(vendas);

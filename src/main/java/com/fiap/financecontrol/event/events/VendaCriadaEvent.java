@@ -1,4 +1,4 @@
-package com.fiap.financecontrol.domains.events;
+package com.fiap.financecontrol.event.events;
 
 import com.fiap.financecontrol.domains.Vendas;
 

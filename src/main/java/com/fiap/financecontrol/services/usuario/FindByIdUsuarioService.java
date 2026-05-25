@@ -1,6 +1,7 @@
 package com.fiap.financecontrol.services.usuario;
 
 import com.fiap.financecontrol.domains.Usuario;
+import com.fiap.financecontrol.exceptions.UsuarioNaoEncontradoException;
 import com.fiap.financecontrol.repositories.UsuarioRepository;
 
 
@@ -20,7 +21,7 @@ public class FindByIdUsuarioService {
 
     public Usuario executeOrThrow(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com ID: " + id));
+                .orElseThrow(() -> new UsuarioNaoEncontradoException("Usuario não encontrado com ID: " + id));
     }
 
 

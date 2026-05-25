@@ -7,6 +7,7 @@ import com.fiap.financecontrol.domains.TipoConta;
 import com.fiap.financecontrol.presentation.dtos.RelatorioSaudeDto;
 import com.fiap.financecontrol.repositories.CentroCustoRepository;
 import com.fiap.financecontrol.repositories.RegistroContabilRepository;
+import com.fiap.financecontrol.services.calculadoraFinanceira.CalculadoraFinanceira;
 import com.fiap.financecontrol.services.registroContabil.RelatorioContabilService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 
@@ -33,6 +35,9 @@ class RelatorioContabilServiceTest {
 
     @Mock
     private CentroCustoRepository centroCustoRepository;
+
+    @Mock
+    private CalculadoraFinanceira calculadoraFinanceira;
 
     @Test
     void deveGerarRelatorioCorretamente() {
@@ -57,12 +62,31 @@ class RelatorioContabilServiceTest {
         r2.setConta(contaDespesa);
         r2.setValor(new BigDecimal("50"));
 
-        when(centroCustoRepository.findById(centroId)).thenReturn(Optional.of(cc));
-        when(registroRepository.findByCentroCustoAndPeriodo(centroId, 1, 2024))
-                .thenReturn(List.of(r1, r2));
+        List<RegistroContabil> registros = List.of(r1, r2);
+
+        when(centroCustoRepository.findById(centroId))
+                .thenReturn(Optional.of(cc));
+
+        when(registroRepository.findByCentroCustoAndPeriodo(
+                centroId,
+                1,
+                2024
+        )).thenReturn(registros);
+
+        when(calculadoraFinanceira.calcularEntradas(anyList()))
+                .thenReturn(new BigDecimal("100"));
+
+        when(calculadoraFinanceira.calcularSaidas(anyList()))
+                .thenReturn(new BigDecimal("50"));
+
+        when(calculadoraFinanceira.calcularSaldo(
+                new BigDecimal("100"),
+                new BigDecimal("50")
+        )).thenReturn(new BigDecimal("50"));
 
         // Act
-        RelatorioSaudeDto dto = service.gerarRelatorio(centroId, 1, 2024);
+        RelatorioSaudeDto dto =
+                service.gerarRelatorio(centroId, 1, 2024);
 
         // Assert
         assertEquals(new BigDecimal("100"), dto.totalEntradas());

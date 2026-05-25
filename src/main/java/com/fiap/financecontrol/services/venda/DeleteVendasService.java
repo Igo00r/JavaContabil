@@ -1,6 +1,7 @@
 package com.fiap.financecontrol.services.venda;
 
 
+import com.fiap.financecontrol.exceptions.VendaNaoEncontradaException;
 import com.fiap.financecontrol.repositories.VendasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class DeleteVendasService {
     @Transactional
     public void execute(Long id) {
         if (!vendasRepository.existsById(id)) {
-            throw new RuntimeException("Venda não encontrada com ID: " + id);
+            throw new VendaNaoEncontradaException("Venda não encontrada com ID: " + id);
         }
         vendasRepository.deleteById(id);
     }

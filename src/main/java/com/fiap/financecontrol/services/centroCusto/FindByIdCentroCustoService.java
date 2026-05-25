@@ -2,6 +2,7 @@ package com.fiap.financecontrol.services.centroCusto;
 
 
 import com.fiap.financecontrol.domains.CentroCusto;
+import com.fiap.financecontrol.exceptions.CentroCustoNaoEncontradoException;
 import com.fiap.financecontrol.repositories.CentroCustoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,6 @@ public class FindByIdCentroCustoService {
 
     public CentroCusto executeOrThrow(Long id) {
         return centroCustoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Centro de Custo não encontrado com ID: " + id));
+                .orElseThrow(() -> new CentroCustoNaoEncontradoException("Centro de Custo não encontrado com ID: " + id));
     }
 }

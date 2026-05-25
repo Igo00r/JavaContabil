@@ -10,7 +10,7 @@ class FinanceControlApplicationTests {
 
     @Test
     void contextLoads() {
-        // Teste básico para verificar se o contexto Spring carrega corretamente
+
     }
 
 }

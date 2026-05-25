@@ -1,7 +1,7 @@
 package com.fiap.financecontrol.services.conta;
 
 import com.fiap.financecontrol.domains.Conta;
-import com.fiap.financecontrol.exceptions.ContaNaoEncontradaException;
+import com.fiap.financecontrol.exceptions.ContaFinanceiraNaoEncontradaException;
 import com.fiap.financecontrol.repositories.ContaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class CreditarSaldo {
     @Transactional
     public void creditar(Long idConta, BigDecimal valor) {
         Conta conta = contaRepository.findById(idConta)
-                .orElseThrow(() -> new ContaNaoEncontradaException("Conta nao encontrada:" + idConta));
+                .orElseThrow(() -> new ContaFinanceiraNaoEncontradaException("Conta nao encontrada:" + idConta));
 
         conta.setSaldo(conta.getSaldo().add(valor));
         contaRepository.save(conta);

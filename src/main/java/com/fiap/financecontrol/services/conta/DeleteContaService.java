@@ -1,5 +1,6 @@
 package com.fiap.financecontrol.services.conta;
 
+import com.fiap.financecontrol.exceptions.ContaFinanceiraNaoEncontradaException;
 import com.fiap.financecontrol.repositories.ContaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class DeleteContaService {
     @Transactional
     public void execute(Long id) {
         if (!contaRepository.existsById(id)) {
-            throw new RuntimeException("Conta não encontrada com ID: " + id);
+            throw new ContaFinanceiraNaoEncontradaException("Conta não encontrada com ID: " + id);
         }
         contaRepository.deleteById(id);
     }

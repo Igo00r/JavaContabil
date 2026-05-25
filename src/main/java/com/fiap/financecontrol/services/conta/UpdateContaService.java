@@ -2,6 +2,7 @@ package com.fiap.financecontrol.services.conta;
 
 import com.fiap.financecontrol.domains.Usuario;
 import com.fiap.financecontrol.domains.Conta;
+import com.fiap.financecontrol.exceptions.ContaFinanceiraNaoEncontradaException;
 import com.fiap.financecontrol.repositories.UsuarioRepository;
 import com.fiap.financecontrol.repositories.ContaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,12 @@ public class UpdateContaService implements ContaDataServiceInterface {
     @Transactional
     public Conta execute(Conta conta) {
         if (!contaRepository.existsById(conta.getId())) {
-            throw new RuntimeException("Conta não encontrada com ID: " + conta.getId());
+            throw new ContaFinanceiraNaoEncontradaException("Conta não encontrada com ID: " + conta.getId());
         }
         
         if (conta.getUsuario() != null && conta.getUsuario().getId() != null) {
             Usuario usuario = usuarioRepository.findById(conta.getUsuario().getId())
-                    .orElseThrow(() -> new RuntimeException("Usuario não encontrado com ID: " + conta.getUsuario().getId()));
+                    .orElseThrow(() -> new ContaFinanceiraNaoEncontradaException("Usuario não encontrado com ID: " + conta.getUsuario().getId()));
             conta.setUsuario(usuario);
         }
         

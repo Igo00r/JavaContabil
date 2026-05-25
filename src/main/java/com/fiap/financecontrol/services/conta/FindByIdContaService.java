@@ -1,6 +1,7 @@
 package com.fiap.financecontrol.services.conta;
 
 import com.fiap.financecontrol.domains.Conta;
+import com.fiap.financecontrol.exceptions.ContaFinanceiraNaoEncontradaException;
 import com.fiap.financecontrol.repositories.ContaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,6 @@ public class FindByIdContaService {
 
     public Conta executeOrThrow(Long id) {
         return contaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com ID: " + id));
+                .orElseThrow(() -> new ContaFinanceiraNaoEncontradaException("Conta não encontrada com ID: " + id));
     }
 }

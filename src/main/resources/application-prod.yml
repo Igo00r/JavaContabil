@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/appdb
+    username: appuser
+    password: apppass
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  flyway:
+    enabled: false
+
+
+  mongodb:
+      uri: mongodb://mongodb:27017/local
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        auto-startup: false
+      direct:
+        auto-startup: false
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:123}

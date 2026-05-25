@@ -2,6 +2,7 @@ package com.fiap.financecontrol.services.usuario;
 
 
 
+import com.fiap.financecontrol.exceptions.UsuarioNaoEncontradoException;
 import com.fiap.financecontrol.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class DeleteUsuarioService {
     @Transactional
     public void execute(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Cliente não encontrado com ID: " + id);
+            throw new UsuarioNaoEncontradoException("Cliente não encontrado com ID: " + id);
         }
         usuarioRepository.deleteById(id);
     }

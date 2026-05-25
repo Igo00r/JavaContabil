@@ -1,6 +1,7 @@
 package com.fiap.financecontrol.services.usuario;
 
 import com.fiap.financecontrol.domains.Usuario;
+import com.fiap.financecontrol.exceptions.UsuarioNaoEncontradoException;
 import com.fiap.financecontrol.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class UpdateUsuarioService implements UsuarioDataServiceInterface{
     @Transactional
     public Usuario execute(Usuario cliente) {
         if (!usuarioRepository.existsById(cliente.getId())) {
-            throw new RuntimeException("Cliente não encontrado com ID: " + cliente.getId());
+            throw new UsuarioNaoEncontradoException("Usuario não encontrado com ID: " + cliente.getId());
         }
         return usuarioRepository.save(cliente);
     }

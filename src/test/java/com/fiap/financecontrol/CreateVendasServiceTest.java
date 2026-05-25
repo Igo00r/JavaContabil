@@ -1,6 +1,6 @@
 package com.fiap.financecontrol;
 
-import com.fiap.financecontrol.domains.events.VendaCriadaEvent;
+import com.fiap.financecontrol.event.events.VendaCriadaEvent;
 import com.fiap.financecontrol.clients.ContaClient;
 import com.fiap.financecontrol.clients.UsuarioClient;
 import com.fiap.financecontrol.domains.*;

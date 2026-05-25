@@ -6,7 +6,7 @@ spring:
   application:
     name: finance-control
   profiles:
-    active: ${PROFILE:local}
+    active: ${PROFILE:prod}
   hateoas:
     use-hal-as-default-json-media-type: false
   rabbitmq:

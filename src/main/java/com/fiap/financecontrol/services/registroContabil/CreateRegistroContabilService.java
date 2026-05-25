@@ -3,6 +3,8 @@ package com.fiap.financecontrol.services.registroContabil;
 import com.fiap.financecontrol.domains.CentroCusto;
 import com.fiap.financecontrol.domains.Conta;
 import com.fiap.financecontrol.domains.RegistroContabil;
+import com.fiap.financecontrol.exceptions.CentroCustoNaoEncontradoException;
+import com.fiap.financecontrol.exceptions.ContaFinanceiraNaoEncontradaException;
 import com.fiap.financecontrol.repositories.CentroCustoRepository;
 import com.fiap.financecontrol.repositories.ContaRepository;
 import com.fiap.financecontrol.repositories.RegistroContabilRepository;
@@ -26,12 +28,12 @@ public class CreateRegistroContabilService {
 
 
         Conta conta = contaRepository.findById(registroContabil.getConta().getId())
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com ID: " + registroContabil.getConta().getId()));
+                .orElseThrow(() -> new ContaFinanceiraNaoEncontradaException("Conta não encontrada com ID: " + registroContabil.getConta().getId()));
         registroContabil.setConta(conta);
 
 
         CentroCusto centroCusto = centroCustoRepository.findById(registroContabil.getCentroCusto().getId())
-                .orElseThrow(() -> new RuntimeException("Centro de Custo não encontrado com ID: " + registroContabil.getCentroCusto().getId()));
+                .orElseThrow(() -> new CentroCustoNaoEncontradoException("Centro de Custo não encontrado com ID: " + registroContabil.getCentroCusto().getId()));
         registroContabil.setCentroCusto(centroCusto);
 
         return registroContabilRepository.save(registroContabil);

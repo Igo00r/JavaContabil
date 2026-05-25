@@ -22,6 +22,44 @@ public class TratadorDeErros {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(detalhar(ex));
     }
+    @ExceptionHandler(ContaInexistente.class)
+    public ResponseEntity<Map<String, String>> ContaInexistenteException(ContaInexistente ex) {
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(detalhar(ex));
+    }
+
+    @ExceptionHandler(ContaFinanceiraNaoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> ContaFinanceiraNaoEncontradaException(ContaFinanceiraNaoEncontradaException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detalhar(ex));
+    }
+
+    @ExceptionHandler(CentroCustoNaoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> CentroCustoNaoEncontradoException(CentroCustoNaoEncontradoException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detalhar(ex));
+    }
+
+    @ExceptionHandler(VendaNaoEncontradaException.class)
+    public ResponseEntity<Map<String, String>> VendaNaoEncontradaException(VendaNaoEncontradaException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detalhar(ex));
+    }
+
+    @ExceptionHandler(RegistroContabilNaoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> RegistroContabilNaoEncontradoException(RegistroContabilNaoEncontradoException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(detalhar(ex));
+    }
+
+
+
+
+
+
+
+
+
 
 
     public Map<String, String> detalhar(Exception ex) {

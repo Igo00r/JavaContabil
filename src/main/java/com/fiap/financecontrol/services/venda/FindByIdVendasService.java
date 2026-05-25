@@ -1,6 +1,7 @@
 package com.fiap.financecontrol.services.venda;
 
 import com.fiap.financecontrol.domains.Vendas;
+import com.fiap.financecontrol.exceptions.VendaNaoEncontradaException;
 import com.fiap.financecontrol.repositories.VendasRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,6 @@ public class FindByIdVendasService {
 
     public Vendas executeOrThrow(Long id) {
         return vendasRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Venda não encontrada com ID: " + id));
+                .orElseThrow(() -> new VendaNaoEncontradaException("Venda não encontrada com ID: " + id));
     }
 }

@@ -2,6 +2,7 @@ package com.fiap.financecontrol.services.registroContabil;
 
 
 import com.fiap.financecontrol.domains.RegistroContabil;
+import com.fiap.financecontrol.exceptions.RegistroContabilNaoEncontradoException;
 import com.fiap.financecontrol.repositories.RegistroContabilRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,6 @@ public class FindByIdRegistroContabilService {
 
     public RegistroContabil executeOrThrow(Long id) {
         return registroContabilRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registro Contábil não encontrado com ID: " + id));
+                .orElseThrow(() -> new RegistroContabilNaoEncontradoException("Registro Contábil não encontrado com ID: " + id));
     }
 }
