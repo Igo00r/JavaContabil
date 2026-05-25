@@ -131,6 +131,78 @@ java -jar target/finance-control-0.0.1-SNAPSHOT.jar
 
 A aplicação estará disponível em: `http://localhost:8080`
 
+# Como executar a aplicação com Docker
+
+## 1. Clonar o repositório
+
+```bash
+git clone <URL_DO_REPOSITORIO>
+```
+
+---
+
+## 2. Entrar na pasta do projeto
+
+```bash
+cd <NOME_DO_PROJETO>
+```
+
+---
+
+## 3. Subir os containers
+
+```bash
+docker compose up -d
+```
+
+---
+
+## 4. Verificar se os containers estão rodando
+
+```bash
+docker ps
+```
+
+---
+
+## 5. Executar a aplicação
+
+Caso a aplicação não inicie automaticamente pelo Docker:
+
+### Linux / Mac
+```bash
+./mvnw spring-boot:run
+```
+
+### Windows
+```bash
+mvnw.cmd spring-boot:run
+```
+
+---
+
+## 6. Acessar a aplicação
+
+```txt
+http://localhost:8080
+```
+
+---
+
+# Parar os containers
+
+```bash
+docker compose down
+```
+
+---
+
+# Recriar os containers
+
+```bash
+docker compose up --build -d
+```
+
 ## Documentação da API
 
 <<<<<<< HEAD
@@ -375,6 +447,7 @@ mvn test jacoco:report
 ### Profiles Disponíveis
 - `local` - H2 Database em memória (padrão)
 - `dev` - Oracle Database para desenvolvimento
+- `prod` - PostgreSql para produção
 
 ### Logs
 A aplicação gera logs detalhados para:
@@ -559,6 +632,16 @@ Uso no projeto
 - [x] Implementação do spring security
 - [x] Dois tipos de usuarios no sistema - (Admin e User), com permissões diferentes.
 - [x] Funcionalidades de fluxos completos alem de CRUD
+
+### Sprint 4 ✅
+
+ 
+- [x] Refatoração do código
+- [x] Conteinerização da aplicação
+- [x] Integração com o mongoDb
+ 
+
+
 
 ## Funcionalidades Implementadas
 
