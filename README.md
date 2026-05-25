@@ -1,4 +1,5 @@
 PITCH SPRINT 4:
+
 Gostaria de registrar um pedido de desculpas pela ausência do vídeo demonstrativo na entrega. O projeto foi desenvolvido e organizado com as funcionalidades implementadas, incluindo a aplicação em execução, estrutura do código, documentação e demais requisitos solicitados. No entanto, por falha nossa na organização final e por imprevistos durante o fechamento da entrega, não conseguimos realizar e anexar o vídeo dentro do prazo.
 
 Reconhecemos que esse item fazia parte dos critérios avaliativos e entendemos que essa ausência pode impactar a nota. Ainda assim, gostaríamos de reforçar que a solução foi construída e está disponível para análise, com os recursos implementados conforme o escopo solicitado.
