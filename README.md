@@ -1,4 +1,5 @@
 PITCH SPRINT 4:
+
 o vídeo demonstrativo não foi anexado devido a imprevistos na organização final da entrega. Apesar disso, o projeto foi concluído com as funcionalidades implementadas, documentação estruturada e arquivos necessários para análise disponíveis no repositório. Pedimos desculpas pela ausência desse item específico.
 
 
